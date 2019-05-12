@@ -10,7 +10,6 @@ import datetime
 import sys
 sys.path.insert(0,'../utils')
 from utils import get_model_metrics
-from configs import get_config
 sys.path.insert(0,'../preprocessing')
 from data_config import config as data_config
 
@@ -26,10 +25,10 @@ def run_training(model, config):
 	ep = 0
 
 	#TODO integrate model type with flattened_input
-	model_type = 'feed_forward'
+	model_name =  config.model_name
 	experiment_time = datetime.datetime.now()
 	time_as_string = experiment_time.ctime().replace(' ', '_').replace(':', '-')
-	output_directory = '../models/label_models/' + '{}_{}'.format(model_type, time_as_string) 
+	output_directory = '../models/label_models/' + '{}_{}'.format(model_name, time_as_string) 
 	os.makedirs(output_directory)
 
 	path_to_trainset = '../data/label_model_windows/'

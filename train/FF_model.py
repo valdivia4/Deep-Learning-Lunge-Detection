@@ -15,7 +15,7 @@ import datetime
 import sys
 sys.path.insert(0,'../utils')
 from utils import get_model_metrics
-from configs import get_config
+from model_configs import get_config
 from train import run_training
 
 config=get_config('feed_forward')
