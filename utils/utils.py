@@ -10,8 +10,9 @@ import sys
 sys.path.insert(0,'../preprocessing')
 from data_config import config
 
-fs = config.SAMPLES_PER_S
-num_features = config.num_features
+data_config = config()
+fs = data_config.SAMPLES_PER_S
+num_features = data_config.num_features
 
 def convert_unlabeled_deployment(inputs_file):
     ## converts unlabeled deployment from matlab to python
@@ -85,16 +86,16 @@ def correct_samples(positive_samples, features, correction_model, fs, scaling_fa
     corrected_samples = [int(round(delta.item()+s)) for delta,s in zip(delta_positive_samples, positive_samples)]
     return corrected_samples
 
-def get_predictions(features, model, model_type, correction_model, y_pred = None, chaining_dist = 5, threshold = 0.9):
+def get_predictions(features, model, model_name, correction_model, y_pred = None, chaining_dist = 5, threshold = 0.9):
     skip = 1
     m=y_pred.shape[0]
-    if model_type == 'feed_forward':
+    if model_name == 'feed_forward':
         samples_per_window = int(model.input_shape[1]/num_features)
     else:
         samples_per_window = model.input_shape[1]
 
     if y_pred is None:
-        y_pred = get_y_pred(features, model, model_type)
+        y_pred = get_y_pred(features, model, model_name)
     ##smooth predictions
     weights = [1,1,1,1,1]
     # y_pred = smooth_signal(y_pred,weights)
@@ -120,9 +121,9 @@ def get_predictions(features, model, model_type, correction_model, y_pred = None
 
     return positive_samples, positive_times
 
-def get_y_pred(features, model, model_type):
+def get_y_pred(features, model, model_name):
     ##load model
-    if model_type == 'feed_forward':
+    if model_name == 'feed_forward':
         FLATTENED_INPUT = True
         samples_per_window = int(model.input_shape[1]/num_features)
     else:
@@ -158,13 +159,13 @@ def get_y_pred(features, model, model_type):
     return y_pred
 
 
-# def get_tp_fp_f1_f2(evaluation_files, model, model_type, species_code, tolerance_s, correction_model = None):
+# def get_tp_fp_f1_f2(evaluation_files, model, model_name, species_code, tolerance_s, correction_model = None):
     
 #     y_preds = []
 #     for file_num in evaluation_files:
 #         features = np.load('../preprocessing/converted_python_data/' + species_code + '/Inputs_' + str(file_num) + '.npy')
 #         labels = np.load('../preprocessing/converted_python_data/' + species_code + '/Labels_' + str(file_num) + '.npy')
-#         y_preds.append(get_y_pred(features, model, model_type))
+#         y_preds.append(get_y_pred(features, model, model_name))
 
 #     total_correct = 0
 #     total_true = 0
@@ -177,7 +178,7 @@ def get_y_pred(features, model, model_type):
 #         labels = np.load('../preprocessing/converted_python_data/' + species_code + '/Labels_' + str(file_num) + '.npy')
 #         if y_pred is None:
 #             print('lol')
-#         positive_samples, __ = get_predictions(features, model, model_type, correction_model, y_pred=y_pred, chaining_dist=chaining_dist, threshold=threshold)
+#         positive_samples, __ = get_predictions(features, model, model_name, correction_model, y_pred=y_pred, chaining_dist=chaining_dist, threshold=threshold)
         
 # #         if len(positive_samples) == 0:
 # #             positive_samples = [100]
@@ -219,13 +220,13 @@ def get_y_pred(features, model, model_type):
 
 #     return tp, fp, f_1, f_2
 
-def get_model_metrics(evaluation_files, model, model_type, tolerance_s, correction_model = None, chaining_dists = [5], thresholds = [0.9]):
+def get_model_metrics(evaluation_files, model, model_name, tolerance_s, correction_model = None, chaining_dists = [5], thresholds = [0.9]):
 
     y_preds = []
     for file_num in evaluation_files:
         features= np.load('../preprocessing/numpy_data/inputs/inputs_'+ str(file_num)+'.npy')
         labels = np.load('../preprocessing/numpy_data/labels/labels_'+ str(file_num)+'.npy')
-        y_preds.append(get_y_pred(features, model, model_type))
+        y_preds.append(get_y_pred(features, model, model_name))
 
     best_model_metrics = {}
     best_f_1 = -float('inf')
@@ -239,7 +240,7 @@ def get_model_metrics(evaluation_files, model, model_type, tolerance_s, correcti
         for y_pred, file_num in zip(y_preds, evaluation_files):
             features= np.load('../preprocessing/numpy_data/inputs/inputs_'+ str(file_num)+'.npy')
             labels = np.load('../preprocessing/numpy_data/labels/labels_'+ str(file_num)+'.npy')
-            positive_samples, __ = get_predictions(features, model, model_type, correction_model, y_pred=y_pred, chaining_dist=chaining_dist, threshold=threshold)
+            positive_samples, __ = get_predictions(features, model, model_name, correction_model, y_pred=y_pred, chaining_dist=chaining_dist, threshold=threshold)
             
             TOLERANCE = tolerance_s*fs #tolerance window for correct prediction 
             sum_dist = 0

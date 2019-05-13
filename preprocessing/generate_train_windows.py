@@ -6,8 +6,9 @@ import numpy as np
 import pandas as pd
 from sklearn.utils import shuffle
 import math
-from data_config import config
+from data_config import config as data_config
 
+config = data_config()
 num_train_sets = config.num_train_sets
 species_code = config.species_code
 window_s = config.window_s
@@ -144,10 +145,10 @@ def saveTrainValSet(near_pos_multiple,rand_neg_multiple, WINDOW, PADDED_WINDOW,
                     Y_train[train_ind] = y
         lwpath_xtrain = "X_train_npm_{}_rnm_{}_num_{}".format(near_pos_multiple, rand_neg_multiple, j)
 
-        np.save("../data/label_model_windows/" + lwpath_xtrain, X_train)
+        np.save("../training_windows/label_model_windows/" + lwpath_xtrain, X_train)
 
         lwpath_ytrain = "Y_train_npm_{}_rnm_{}_num_{}".format(near_pos_multiple, rand_neg_multiple, j)
-        np.save("../data/label_model_windows/" + lwpath_ytrain, Y_train)
+        np.save("../training_windows/label_model_windows/" + lwpath_ytrain, Y_train)
 
         print(train_block_size, X_train.shape, Y_train.shape)
         X_train, Y_train = None, None
@@ -185,9 +186,9 @@ def saveTrainValSet(near_pos_multiple,rand_neg_multiple, WINDOW, PADDED_WINDOW,
 
 
     print(X_trainval.shape, Y_trainval.shape)
-    np.save("../data/label_model_windows/" + "X_trainval_npm_{}_rnm_{}.npy".format(near_pos_multiple, rand_neg_multiple)
+    np.save("../training_windows/label_model_windows/" + "X_trainval_npm_{}_rnm_{}.npy".format(near_pos_multiple, rand_neg_multiple)
 , X_trainval)
-    np.save("../data/label_model_windows/" + "Y_trainval_npm_{}_rnm_{}.npy".format(near_pos_multiple, rand_neg_multiple)
+    np.save("../training_windows/label_model_windows/" + "Y_trainval_npm_{}_rnm_{}.npy".format(near_pos_multiple, rand_neg_multiple)
 , Y_trainval)
 
 saveTrainValSet(near_pos_multiple,rand_neg_multiple, WINDOW, PADDED_WINDOW, 
