@@ -10,7 +10,6 @@ from data_config import config as data_config
 
 config = data_config()
 num_train_sets = config.num_train_sets
-species_code = config.species_code
 window_s = config.window_s
 
 ## near_pos_multiple is the multiple of near positive training examples to keep relative to positive training examples
@@ -20,12 +19,12 @@ near_pos_multiple = config.near_pos_multiple ##make sure fs*multiple is an integ
 rand_neg_multiple = config.rand_neg_multiple
    
 num_features = config.num_features
-SAMPLES_PER_S = config.SAMPLES_PER_S
+fs = config.fs
 padded_window_s = config.padded_window_s
 
 num_files = config.num_files
-WINDOW = window_s*SAMPLES_PER_S
-PADDING = int((padded_window_s-window_s)/2) * SAMPLES_PER_S
+WINDOW = window_s*fs
+PADDING = int((padded_window_s-window_s)/2) * fs
     
 PADDED_WINDOW = 2*PADDING+WINDOW
 pos_keep = WINDOW
@@ -41,17 +40,20 @@ print ('test: ' , test_files)
 print('val: ',val_files)
 print('train: ', train_files)
 
-#Gets positive and negative samples for the deployment with features X and labels Y
-#pos_keep positive samples are returned for every positive label
-#near_pos_keep = near_pos_multiple*pos_keep nearly positive samples are kept as well as 
-#rand_neg_keep = rand_neg_multiple*pos_keep randomly sampled negative samples
+
+def is_valid_index(index, PADDED_WINDOW, m):
+    #returns True if the window [index,index+padded_window) is in the valid range [0, m) 
+    return (index < m-PADDED_WINDOW) and (index>= 0)
+
 def get_pos_and_neg_samples(X, Y, PADDED_WINDOW, pos_keep, near_pos_keep, rand_neg_multiple):
+    #Gets positive and negative samples for the deployment with features X and labels Y
+    #pos_keep positive samples are returned for every positive label
+    #near_pos_keep = near_pos_multiple*pos_keep nearly positive samples are kept as well as 
+    #rand_neg_keep = rand_neg_multiple*pos_keep randomly sampled negative samples
     seed=6
     np.random.seed(seed)
     m, n = X.shape
     indices = np.where(Y == 1)[0]
-    #get rid of indices whose window will extend beyond the deployment
-    indices = [ind for ind in indices if ind < m-PADDED_WINDOW]
 
     pos_samples = set([])
     near_pos_samples = set([])
@@ -60,18 +62,21 @@ def get_pos_and_neg_samples(X, Y, PADDED_WINDOW, pos_keep, near_pos_keep, rand_n
         pos_indices = np.random.choice(pos_indices, pos_keep,replace=False)
         count = 0
         for k in pos_indices:
-            pos_samples.add(k)
-            count+=1
+            if is_valid_index(k, PADDED_WINDOW, m):
+                pos_samples.add(k)
+                count+=1
 
         #choose near_pos_keep near positive indices per positive example
         diff = list(range(PADDING))+ list(range(PADDING+WINDOW + 1, 2*PADDING+WINDOW+1))
         near_pos_indices = [ind-w for w in diff]
         near_pos_indices = np.random.choice(near_pos_indices, near_pos_keep,replace=False)
         for k in near_pos_indices:
-            near_pos_samples.add(k)
+            if is_valid_index(k, PADDED_WINDOW, m):
+                near_pos_samples.add(k)
                 
     #neg times that haven't been selected
-    unselected_neg_samples = (set(range(0,m-PADDED_WINDOW)) - pos_samples) - near_pos_samples
+    unselected_neg_samples = set([ind for ind in range(0,m-PADDED_WINDOW) if is_valid_index(ind, PADDED_WINDOW, m)])
+    unselected_neg_samples = (unselected_neg_samples - pos_samples) - near_pos_samples
     rand_neg_keep = int(rand_neg_multiple*len(pos_samples))
     neg_samples = np.random.choice(list(unselected_neg_samples), min(rand_neg_keep, len(unselected_neg_samples)), replace=False)
     neg_samples = list(neg_samples)
@@ -102,7 +107,7 @@ print ('Total = ', num_train)
 
 seen = set([])
 def saveTrainValSet(near_pos_multiple,rand_neg_multiple, WINDOW, PADDED_WINDOW, 
-                 num_files,train_files, val_files, num_train,species_code, pathname = ''):
+                 num_files,train_files, val_files, num_train, pathname = ''):
     
    #size of each training set block 
     train_block_size = int(math.ceil(num_train/num_train_sets))
@@ -150,6 +155,7 @@ def saveTrainValSet(near_pos_multiple,rand_neg_multiple, WINDOW, PADDED_WINDOW,
         lwpath_ytrain = "Y_train_npm_{}_rnm_{}_num_{}".format(near_pos_multiple, rand_neg_multiple, j)
         np.save("../training_windows/label_model_windows/" + lwpath_ytrain, Y_train)
 
+        print('Finished Training Window Block {} of size:'.format(j))
         print(train_block_size, X_train.shape, Y_train.shape)
         X_train, Y_train = None, None
 
@@ -192,5 +198,5 @@ def saveTrainValSet(near_pos_multiple,rand_neg_multiple, WINDOW, PADDED_WINDOW,
 , Y_trainval)
 
 saveTrainValSet(near_pos_multiple,rand_neg_multiple, WINDOW, PADDED_WINDOW, 
-                 num_files, train_files, val_files, num_train,species_code, pathname = '')
+                 num_files, train_files, val_files, num_train, pathname = '')
 

@@ -60,7 +60,7 @@ class ff_search_config():
         self.flattened_input = True
         self.near_pos_multiple = 0.2
         self.rand_neg_multiple = 19.8 
-        self.num_train_sets = 1
+        self.num_train_sets = 10 
         self.hyper_search = True
         self.model_name = 'feed_forward'
 

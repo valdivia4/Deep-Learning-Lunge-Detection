@@ -11,7 +11,7 @@ sys.path.insert(0,'../preprocessing')
 from data_config import config
 
 data_config = config()
-fs = data_config.SAMPLES_PER_S
+fs = data_config.fs
 num_features = data_config.num_features
 
 def convert_unlabeled_deployment(inputs_file):

@@ -5,9 +5,9 @@ import pandas as pd
 
 def normalize(features):
     ave=np.nanmean(features, axis=0)
-    print(ave)
+    #print(ave)
     std=np.nanstd(features, axis=0)
-    print(std)
+    #print(std)
     return (features-ave)/std
 
 def clean_data(features):
@@ -31,6 +31,6 @@ for directory in os.listdir("./raw_data"):
 			#result = np.genfromtxt(raw_path + filename, delimiter=",")
 			if filename.startswith('inputs'):
 				result = clean_data(result)
-			print(result)
+			#print(result)
 			np.save(numpy_path + filename[:-4], result)
 
