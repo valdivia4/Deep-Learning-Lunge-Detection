@@ -108,8 +108,9 @@ def build_model(input_shape, nb_classes, config):
 
 	model = keras.models.Model(inputs=input_layer, outputs=output_layer)
 
-	model.compile(loss='binary_crossentropy', optimizer=keras.optimizers.Adam(lr=config.learning_rate), 
-		metrics=['accuracy'])
+	model.compile(loss=config.loss, optimizer=config.optimizer,
+		metrics=config.metrics)
+	K.set_value(model.optimizer.lr, config.learning_rate)
 
 	return model
 
@@ -123,7 +124,6 @@ nb_classes = 2
 num_trainings = 20
 for __ in range(num_trainings):
 	config = get_config(config_name)
-
 	model = build_model(input_shape, nb_classes, config)
 	model.summary()
 

@@ -9,7 +9,7 @@ class resnet_config():
         self.near_pos_multiple = 0.2
         self.rand_neg_multiple = 19.8 
         self.num_train_sets = 10
-        self.hyper_search = True
+        self.hyper_search = False
         self.model_name = 'resnet'
 
         # hyper params
@@ -20,11 +20,7 @@ class resnet_config():
         self.batch_size = 128
         self.optimizer = 'adam'
         self.learning_rate = 1e-3
-        self.hidden_layers = [32,20]
-        self.batch_norm = True
-        self.activation = 'relu'
-        self.output_activation = 'sigmoid'
-        pos_weight = 8
+        pos_weight = 1
         self.loss = get_weighted_bce(pos_weight)
         self.metrics=['accuracy']
 
@@ -51,7 +47,7 @@ class ff_config():
         self.batch_norm = True
         self.activation = 'relu'
         self.output_activation = 'sigmoid'
-        pos_weight = 8
+        pos_weight = 1
         self.loss = get_weighted_bce(pos_weight)
         self.metrics=['accuracy']
 
@@ -80,7 +76,7 @@ class ff_search_config():
         self.activation = 'relu'
         self.output_activation = 'sigmoid'
         # self.loss = 'binary_crossentropy'
-        pos_weight = 8
+        pos_weight = 1
         self.loss = get_weighted_bce(pos_weight)
         self.metrics=['accuracy']
 

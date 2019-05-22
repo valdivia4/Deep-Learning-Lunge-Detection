@@ -27,6 +27,7 @@ __, w, f = X_trainval.shape
 input_dim = w*f
 
 def build_model(config):
+    
     model = Sequential()
     if len(config.hidden_layers) > 0:
         model.add(Dense(config.hidden_layers[0], input_dim=input_dim))
@@ -44,6 +45,7 @@ def build_model(config):
     model.compile(optimizer=config.optimizer,
                   loss=config.loss,
                   metrics=config.metrics)
+    K.set_value(model.optimizer.lr, config.learning_rate)
 
     return model
 
