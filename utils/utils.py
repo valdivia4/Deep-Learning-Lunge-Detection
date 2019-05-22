@@ -86,9 +86,8 @@ def correct_samples(positive_samples, features, correction_model, fs, scaling_fa
     corrected_samples = [int(round(delta.item()+s)) for delta,s in zip(delta_positive_samples, positive_samples)]
     return corrected_samples
 
-def get_predictions(features, model, flattened_input, correction_model, y_pred = None, chaining_dist = 5, threshold = 0.9):
+def get_predictions(features, model, flattened_input, correction_model=None, y_pred=None, chaining_dist=5, threshold=0.9):
     skip = 1
-    m=y_pred.shape[0]
     if flattened_input:
         samples_per_window = int(model.input_shape[1]/num_features)
     else:
@@ -96,6 +95,7 @@ def get_predictions(features, model, flattened_input, correction_model, y_pred =
 
     if y_pred is None:
         y_pred = get_y_pred(features, model, flattened_input)
+    m=y_pred.shape[0]
     ##smooth predictions
     weights = [1,1,1,1,1]
     # y_pred = smooth_signal(y_pred,weights)
@@ -104,17 +104,15 @@ def get_predictions(features, model, flattened_input, correction_model, y_pred =
     samples = [k*skip*fs+int(samples_per_window/2) for k in range(0,m)]
     times = [int(s/fs) for s in samples]
 
-    sample_to_pred_index = dict([(s,i) for i,s in enumerate(samples)])
     time_to_pred_index = dict([(t,i) for i,t in enumerate(times)])
     time_to_sample = dict([(t,s) for t,s in zip(times,samples)])
-    sample_to_time = dict([(s,t) for s,t in zip(samples,times)])
 
     positive_times = [t for t in times if y_pred[time_to_pred_index[t]][0] > 0.5]
 
     positive_times = consolidate_times(positive_times, y_pred, time_to_pred_index, chaining_dist, threshold)
     positive_samples = [time_to_sample[t] for t in positive_times]
 
-    if correction_model != None:
+    if correction_model is not None:
         positive_samples = correct_samples(positive_samples, features,correction_model, fs)
 
     positive_times = [s/fs for s in positive_samples]
