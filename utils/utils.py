@@ -86,16 +86,16 @@ def correct_samples(positive_samples, features, correction_model, fs, scaling_fa
     corrected_samples = [int(round(delta.item()+s)) for delta,s in zip(delta_positive_samples, positive_samples)]
     return corrected_samples
 
-def get_predictions(features, model, model_name, correction_model, y_pred = None, chaining_dist = 5, threshold = 0.9):
+def get_predictions(features, model, flattened_input, correction_model, y_pred = None, chaining_dist = 5, threshold = 0.9):
     skip = 1
     m=y_pred.shape[0]
-    if model_name == 'feed_forward':
+    if flattened_input:
         samples_per_window = int(model.input_shape[1]/num_features)
     else:
         samples_per_window = model.input_shape[1]
 
     if y_pred is None:
-        y_pred = get_y_pred(features, model, model_name)
+        y_pred = get_y_pred(features, model, flattened_input)
     ##smooth predictions
     weights = [1,1,1,1,1]
     # y_pred = smooth_signal(y_pred,weights)
@@ -121,13 +121,11 @@ def get_predictions(features, model, model_name, correction_model, y_pred = None
 
     return positive_samples, positive_times
 
-def get_y_pred(features, model, model_name):
+def get_y_pred(features, model, flattened_input):
     ##load model
-    if model_name == 'feed_forward':
-        FLATTENED_INPUT = True
+    if flattened_input:
         samples_per_window = int(model.input_shape[1]/num_features)
     else:
-        FLATTENED_INPUT = False
         samples_per_window = model.input_shape[1]    
     secs_per_window = int(samples_per_window/fs)
     total_seconds = int(features.shape[0]/fs)
@@ -139,7 +137,7 @@ def get_y_pred(features, model, model_name):
     
     # TODO: Handle memory overflow of X!!!!!
     # TODO: Handle memory overflow of X!!!!!
-    if FLATTENED_INPUT:
+    if flattened_input:
         flattened_dim = num_features*samples_per_window
         X = np.zeros((m,flattened_dim))
     else:
@@ -149,7 +147,7 @@ def get_y_pred(features, model, model_name):
         sec = j*skip
         sample = int(sec*fs) #(make sure is already integer)
         window = features[sample:sample+samples_per_window,:]
-        if FLATTENED_INPUT:
+        if flattened_input:
             window = np.reshape(window, (1,flattened_dim))
             X[j,:] = window
         else:
@@ -220,13 +218,13 @@ def get_y_pred(features, model, model_name):
 
 #     return tp, fp, f_1, f_2
 
-def get_model_metrics(evaluation_files, model, model_name, tolerance_s, correction_model = None, chaining_dists = [5], thresholds = [0.9]):
+def get_model_metrics(evaluation_files, model, flattened_input, tolerance_s, correction_model = None, chaining_dists = [5], thresholds = [0.9]):
 
     y_preds = []
     for file_num in evaluation_files:
         features= np.load('../preprocessing/numpy_data/inputs/inputs_'+ str(file_num)+'.npy')
         labels = np.load('../preprocessing/numpy_data/labels/labels_'+ str(file_num)+'.npy')
-        y_preds.append(get_y_pred(features, model, model_name))
+        y_preds.append(get_y_pred(features, model, flattened_input))
 
     best_model_metrics = {}
     best_f_1 = -float('inf')
@@ -240,7 +238,7 @@ def get_model_metrics(evaluation_files, model, model_name, tolerance_s, correcti
         for y_pred, file_num in zip(y_preds, evaluation_files):
             features= np.load('../preprocessing/numpy_data/inputs/inputs_'+ str(file_num)+'.npy')
             labels = np.load('../preprocessing/numpy_data/labels/labels_'+ str(file_num)+'.npy')
-            positive_samples, __ = get_predictions(features, model, model_name, correction_model, y_pred=y_pred, chaining_dist=chaining_dist, threshold=threshold)
+            positive_samples, __ = get_predictions(features, model, flattened_input, correction_model, y_pred=y_pred, chaining_dist=chaining_dist, threshold=threshold)
             
             TOLERANCE = tolerance_s*fs #tolerance window for correct prediction 
             sum_dist = 0

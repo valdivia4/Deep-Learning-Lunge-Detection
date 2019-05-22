@@ -54,7 +54,7 @@ def run_training(model, config):
 	        model.fit(X_train, Y_train, batch_size=config.batch_size, epochs=1, verbose=1, callbacks=None, validation_data=(X_trainval, Y_trainval))
 	        X_train, Y_train = None, None
 	    ep += 1
-	    model_metrics = get_model_metrics(evaluation_files, model, model_name, tolerance_seconds, chaining_dists = config.chaining_dists, thresholds = config.thresholds)
+	    model_metrics = get_model_metrics(evaluation_files, model, config.flattened_input, tolerance_seconds, chaining_dists = config.chaining_dists, thresholds = config.thresholds)
 	    tp, fp, f_1, f_2, chain, thresh = model_metrics['tp'], model_metrics['fp'], model_metrics['f_1'], model_metrics['f_2'], model_metrics['chaining_dist'], model_metrics['threshold']
 	    print (tp, fp, f_1, f_2, chain, thresh)
 	    model.save(output_directory + '/ep_{}_tp_{}_fp_{}_f_1_{}_f_2_{}_chain_{}_thresh_{}'.format(ep,tp,fp,f_1,f_2, chain, thresh))
