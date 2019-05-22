@@ -1,5 +1,5 @@
 import os
-import scipy.io as sio
+
 import numpy as np
 import pandas as pd
 
@@ -23,7 +23,7 @@ def clean_data(features):
 
 
 def process_csv(raw_path, filename, is_input=True):
-	result = pd.read_csv(raw_path + filename, sep=',', header=None)
+	result = pd.read_csv(raw_path + filename, header=None)
 	result = np.array(result)
 	if is_input:
 		result = clean_data(result)
@@ -34,6 +34,8 @@ def convert_csvs_to_numpy():
         if directory.startswith("."): continue
         raw_path = "./raw_data/" + directory + "/"
         numpy_path = "./numpy_data/" + directory + "/"
+        if not os.path.exists(numpy_path):
+        	os.makedirs(numpy_path)
         for filename in os.listdir(raw_path):
             if filename.endswith('.txt'):
                 is_input = filename.startswith('inputs')

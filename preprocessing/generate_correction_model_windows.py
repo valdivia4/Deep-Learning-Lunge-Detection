@@ -1,6 +1,9 @@
+import os
+import random
+
 import numpy as np
 from sklearn.utils import shuffle
-import random
+
 from data_config import config as data_config
 
 
@@ -55,9 +58,14 @@ X_train, Y_train_regression = shuffle(X_train, Y_train_regression)
 X_val, Y_val_regression = shuffle(X_val, Y_val_regression)
 X_test, Y_test_regression = shuffle(X_test, Y_test_regression)
 
-np.save("../training_windows/correction_model_windows/X_train" , X_train)
-np.save("../training_windows/correction_model_windows/Y_train_regression", Y_train_regression)
-np.save("../training_windows/correction_model_windows/X_val" , X_val)
-np.save("../training_windows/correction_model_windows/Y_val_regression", Y_val_regression)
-np.save("../training_windows/correction_model_windows/X_test" , X_test)
-np.save("../training_windows/correction_model_windows/Y_test_regression", Y_test_regression)
+folder = "../training_windows/correction_model_windows/"
+if not os.path.exists(folder):
+    os.makedirs(folder)
+
+np.save(folder + "X_train" , X_train)
+np.save(folder + "Y_train_regression", Y_train_regression)
+np.save(folder + "X_val" , X_val)
+np.save(folder + "Y_val_regression", Y_val_regression)
+np.save(folder + "X_test" , X_test)
+np.save(folder + "Y_test_regression", Y_test_regression)
+

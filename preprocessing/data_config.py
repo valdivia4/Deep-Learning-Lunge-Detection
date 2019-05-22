@@ -6,6 +6,7 @@ class config():
 
         self.num_train_sets = 10 
         self.window_s = 4
+        self.padded_window_s = 20
 
         ## near_pos_multiple is the multiple of near positive training examples to keep relative to positive training examples
         ## random_neg_multiple is the multiple of randomly selected negative examples
@@ -15,7 +16,6 @@ class config():
            
         self.num_features = 5
         self.fs = 10
-        self.padded_window_s = 20
 
         # Correction windows
         self.num_correction_windows_per_label = 10

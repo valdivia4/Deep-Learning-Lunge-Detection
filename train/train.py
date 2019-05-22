@@ -56,5 +56,12 @@ def run_training(model, config):
 	    ep += 1
 	    model_metrics = get_model_metrics(evaluation_files, model, config.flattened_input, tolerance_seconds, chaining_dists = config.chaining_dists, thresholds = config.thresholds)
 	    tp, fp, f_1, f_2, chain, thresh = model_metrics['tp'], model_metrics['fp'], model_metrics['f_1'], model_metrics['f_2'], model_metrics['chaining_dist'], model_metrics['threshold']
-	    print (tp, fp, f_1, f_2, chain, thresh)
+	    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Validation Set Metrics ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+	    print("True Positive Rate:", tp)
+	    print("False Positive Rate:", fp)
+	    print("F1 Score:", f_1)
+	    print("F2 Score:", f_2)
+	    print("Best Chaining Distance:", chain)
+	    print("Best Threshold:", thresh)
+	    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 	    model.save(output_directory + '/ep_{}_tp_{}_fp_{}_f_1_{}_f_2_{}_chain_{}_thresh_{}'.format(ep,tp,fp,f_1,f_2, chain, thresh))

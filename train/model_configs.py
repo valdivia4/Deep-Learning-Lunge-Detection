@@ -20,8 +20,8 @@ class resnet_config():
         self.batch_size = 128
         self.optimizer = 'adam'
         self.learning_rate = 1e-3
-        pos_weight = 1
-        self.loss = get_weighted_bce(pos_weight)
+        self.pos_weight = 1
+        self.loss = get_weighted_bce(self.pos_weight)
         self.metrics=['accuracy']
 
 class ff_config():
@@ -47,8 +47,8 @@ class ff_config():
         self.batch_norm = True
         self.activation = 'relu'
         self.output_activation = 'sigmoid'
-        pos_weight = 1
-        self.loss = get_weighted_bce(pos_weight)
+        self.pos_weight = 1
+        self.loss = get_weighted_bce(self.pos_weight)
         self.metrics=['accuracy']
 
 class ff_search_config():
@@ -76,8 +76,8 @@ class ff_search_config():
         self.activation = 'relu'
         self.output_activation = 'sigmoid'
         # self.loss = 'binary_crossentropy'
-        pos_weight = 1
-        self.loss = get_weighted_bce(pos_weight)
+        self.pos_weight = 1
+        self.loss = get_weighted_bce(self.pos_weight)
         self.metrics=['accuracy']
 
 

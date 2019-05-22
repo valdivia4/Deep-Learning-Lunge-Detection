@@ -1,10 +1,13 @@
+import os
+import sys
+
 import numpy as np
 from keras.models import Sequential
 from keras.layers import Dense, Activation
 from keras.layers.normalization import BatchNormalization
 from keras.optimizers import Adam
 from keras import backend as K
-import sys
+
 sys.path.append('../preprocessing/')
 from data_config import config as data_config
 
@@ -43,6 +46,9 @@ model.compile(optimizer='adam',
               loss='mean_squared_error',
               metrics=[avgabs])
 
-model.fit(X_train_f, Y_train, epochs=50, validation_data=(X_val_f,Y_val),batch_size=32)
+model.fit(X_train_f, Y_train, epochs=25, validation_data=(X_val_f,Y_val),batch_size=32)
 
-model.save('../models/correction_models/correction_model.h5')
+folder = '../models/correction_models/'
+if not os.path.exists(folder):
+    os.makedirs(folder)
+model.save(folder + 'correction_model.h5')

@@ -20,6 +20,14 @@ config = get_config(config_name)
 
 
 # From Github repo: https://github.com/hfawaz/dl-4-tsc
+"""
+@article{IsmailFawaz2018deep,
+  Title                    = {Deep learning for time series classification: a review},
+  Author                   = {Ismail Fawaz, Hassan and Forestier, Germain and Weber, Jonathan and Idoumghar, Lhassane and Muller, Pierre-Alain},
+  journal                = {Data Mining and Knowledge Discovery},
+  Year                     = {2019}
+}
+"""
 
 
 # ResNet
@@ -33,7 +41,6 @@ import time
 import matplotlib 
 matplotlib.use('agg')
 import matplotlib.pyplot as plt 
-from resnet_utils.utils import save_logs
 
 
 def build_model(input_shape, nb_classes, config):

@@ -148,12 +148,14 @@ def saveTrainValSet(near_pos_multiple,rand_neg_multiple, WINDOW, PADDED_WINDOW,
                     train_ind = shuff_ind - j*train_block_size
                     X_train[train_ind,:] = x
                     Y_train[train_ind] = y
-        lwpath_xtrain = "X_train_npm_{}_rnm_{}_num_{}".format(near_pos_multiple, rand_neg_multiple, j)
 
-        np.save("../training_windows/label_model_windows/" + lwpath_xtrain, X_train)
-
-        lwpath_ytrain = "Y_train_npm_{}_rnm_{}_num_{}".format(near_pos_multiple, rand_neg_multiple, j)
-        np.save("../training_windows/label_model_windows/" + lwpath_ytrain, Y_train)
+        folder = "../training_windows/label_model_windows/"
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+        x_train_name = "X_train_npm_{}_rnm_{}_num_{}".format(near_pos_multiple, rand_neg_multiple, j)
+        y_train_name = "Y_train_npm_{}_rnm_{}_num_{}".format(near_pos_multiple, rand_neg_multiple, j)
+        np.save(folder + x_train_name, X_train)
+        np.save(folder + y_train_name, Y_train)
 
         print('Finished Training Window Block {} of size:'.format(j))
         print(train_block_size, X_train.shape, Y_train.shape)
