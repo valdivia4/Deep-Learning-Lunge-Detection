@@ -13,6 +13,9 @@ from data_config import config
 data_config = config()
 fs = data_config.fs
 num_features = data_config.num_features
+correction_window_s = data_config.correction_window_s
+max_exp_perturbation = data_config.max_exp_perturbation
+
 
 def convert_unlabeled_deployment(inputs_file):
     ## converts unlabeled deployment from matlab to python
@@ -75,8 +78,10 @@ def consolidate_times(positive_times, y_pred, time_to_pred_index, chaining_dist 
             consolidated_times.append(m)
     return consolidated_times
 
-def correct_samples(positive_samples, features, correction_model, fs, scaling_factor = 5, window_s = 16):
+def correct_samples(positive_samples, features, correction_model, fs):
     ## Places the output lunge times closer to the true lunge times
+    scaling_factor = max_exp_perturbation
+    window_s = correction_window_s
 
     WINDOW = window_s*fs 
     centered_windows = [features[s-int(WINDOW/2):s+int(WINDOW/2),:] for s in positive_samples]
