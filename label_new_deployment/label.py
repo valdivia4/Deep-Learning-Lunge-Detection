@@ -8,11 +8,7 @@ sys.path.insert(0, '../train')
 from model_configs import get_weighted_bce
 from keras.utils.generic_utils import get_custom_objects
 
-raw_path = './unlabeled_inputs/'
-input_file_name = 'inputs_3.txt'
-np_features = process_csv(raw_path, input_file_name)
-
-
+#first load the model
 #defining custom loss function
 pos_weight = 8 #if using weighted binary crossentropy loss
 weighted_bce = get_weighted_bce(pos_weight)
@@ -36,11 +32,17 @@ def avgabs(y_true,y_pred): ##in seconds (if perturbation_max = 5*fs)
 correction_model = keras.models.load_model('../models/correction_models/correction_model.h5', custom_objects={'avgabs': avgabs})
 #correction_model = None
 
-labels, __ = get_predictions(np_features, model, flattened_input, correction_model)
-labels = np.array(labels)
-labels = np.reshape(labels, (len(labels),1))
+#now generate the labels
+raw_path = './unlabeled_inputs/'
+for input_filename in os.listdir(raw_path):
+    np_features = process_csv(raw_path, input_filename)
 
-label_path = 'predicted_labels'
-if not os.path.exists(label_path):
-   os.makedirs(label_path)
-np.savetxt(label_path + '/labels_{}'.format(input_file_name), labels, delimiter=',')
+
+    labels, __ = get_predictions(np_features, model, flattened_input, correction_model)
+    labels = np.array(labels)
+    labels = np.reshape(labels, (len(labels),1))
+
+    label_path = 'predicted_labels'
+    if not os.path.exists(label_path):
+       os.makedirs(label_path)
+    np.savetxt(label_path + '/labels_{}'.format(input_filename), labels, delimiter=',')
