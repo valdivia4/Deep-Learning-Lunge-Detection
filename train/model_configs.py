@@ -1,3 +1,4 @@
+import random
 import numpy as np 
 import tensorflow as tf
 
@@ -44,6 +45,7 @@ class ff_config():
         self.optimizer = 'adam'
         self.learning_rate = 1e-3
         self.hidden_layers = [32,20]
+        self.l2_reg = 0.0
         self.batch_norm = True
         self.activation = 'relu'
         self.output_activation = 'sigmoid'
@@ -71,12 +73,16 @@ class ff_search_config():
         self.optimizer = 'adam'
         exp = -(2*np.random.random()+2)
         self.learning_rate = 10**exp
-        self.hidden_layers = [32,20]
+        h_layers = random.sample([[32, 20], [64, 32, 20], [128, 64, 32, 20]], 1)[0]
+        self.hidden_layers = h_layers
+        reg = random.sample([0., 1e-4, 1e-2, 1.], 1)[0]
+        self.l2_reg = reg
         self.batch_norm = True
         self.activation = 'relu'
         self.output_activation = 'sigmoid'
         # self.loss = 'binary_crossentropy'
-        self.pos_weight = 8
+        weight = random.sample([8, 18, 28], 1)[0]
+        self.pos_weight = weight
         self.loss = get_weighted_bce(self.pos_weight)
         self.metrics=['accuracy']
 
