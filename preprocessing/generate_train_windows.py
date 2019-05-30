@@ -174,6 +174,13 @@ def saveTrainValSet(near_pos_multiple,rand_neg_multiple, WINDOW, PADDED_WINDOW,
         Y = np.load('./numpy_data/labels/labels_'+ str(i)+'.npy')
         
         pos_samples, neg_samples =  get_pos_and_neg_samples(X, Y, PADDED_WINDOW, pos_keep, near_pos_keep, rand_neg_multiple)
+        size = len(pos_samples) + len(neg_samples)
+        if size > 10000:
+            new_pos_size = int((10000/size)*len(pos_samples))
+            pos_samples = list(np.random.choice(pos_samples, size=new_pos_size))
+            
+            new_neg_size = int((10000/size)*len(neg_samples))
+            neg_samples = list(np.random.choice(neg_samples, size=new_neg_size))
         for index in pos_samples:
             x = X[index:index+PADDED_WINDOW,:]
     #         print(x.shape)
