@@ -37,7 +37,7 @@ For training, the first step is to preprocess the data, which happens in the pre
 cd preprocessing
 ```
 
-The raw lunge files for training, validation, and testing go in the raw_data directory. We assume a .csv input where raw_data/inputs is the time series of measurements and raw_data/labels is the true labels of the lunges. For specifics on formatting, see the synthetic data provided in these folders.
+The raw lunge files for training, validation, and testing go in the raw_data directory. We assume a .csv input where raw_data/inputs contains the time series of measurements and raw_data/labels contains the true labels of the lunges. For specifics on formatting, see the synthetic data provided in these folders.
 
 The next step is to convert the data to numpy format
 
