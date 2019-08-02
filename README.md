@@ -45,7 +45,7 @@ The next step is to convert the data to numpy format
 python3 convert_to_numpy.py
 ```
 
-which cleans and normalizes the data and saves it .npy format in the created numpy_data directory.
+which performs some preprocessing on the data and saves it .npy format in the created numpy_data directory.
 
 Next, modify the variables in the data_config.py file to conform to your provided data.
 
