@@ -47,7 +47,9 @@ python3 convert_to_numpy.py
 
 which cleans and normalizes the data and saves it .npy format in the created numpy_data directory.
 
-Next, modify the variables in the data_config.py file to conform to your data. This file contains information about the train/dev splits, information about the deployments such as the sampling frequency, and information about the desired padded_window and window sizes for training.
+Next, modify the variables in the data_config.py file to conform to your provided data.
+
+These variables contain information about the train/dev splits, information about the deployments such as the sampling frequency, and information about the desired padded_window and window sizes for training.
 
 Then we create the windows used for training the labeling model and the correction model.
 
@@ -55,6 +57,8 @@ Then we create the windows used for training the labeling model and the correcti
 python3 generate_train_windows
 python3 generate_correction_model_windows
 ```
+
+### Training
 
 
 
