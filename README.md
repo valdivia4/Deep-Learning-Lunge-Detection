@@ -99,6 +99,7 @@ And the model should begin training. After each epoch, the validation set metric
  
  in the evaluate directory.
  
+ #### Plotting
  The first notebook plot_lunge_predictions plots a model's predictions on a deployment. To set which model to use, set the folder and model name, e.g.
  ```
  folder = 'feed_forward_Sat_Aug__3_11-51-22_2019'
@@ -107,8 +108,13 @@ And the model should begin training. After each epoch, the validation set metric
  
  Then run the cells. You can select which range to plot the true labels and the model predictions by setting the startTime and endTime variables.
  
- Here we give a sample output.
+ Here is an example output on the synthetic data. The dots correspond to the true labels, and the triangles correspond to model predictions.
  
+ ![alt text](readme_images/sample_plot_output.png "Sample plot output")
+ 
+ #### Model Metrics
+ 
+ The second notebook computes various model metrics on a deployment
  
  
  
