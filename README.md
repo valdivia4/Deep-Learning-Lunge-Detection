@@ -2,7 +2,7 @@
 
 This repository contains an implementation for automatically labeling whale lunges from a time series of accelerometer data. The problem input is a finite time series of data. The problem output is a finite set of lunge times, indicated by defining features in the time series. 
 
-To label the lunges, we use a sliding window approach. We train a labeling model that inputs a fixed length window (e.g. a 20 second window) of the time series. The network predicts whether there a lunge within some fixed time (e.g. 2 seconds) of the middle of the window. To obtain the lunge predictions, we slide the fixed-length window across the entire time series, obtain the neural network's predictions on these windows, and consolidate the predictions to produce the set of lunge times. Finally, we use a correction model to place the predictions closer to the true lunge times.
+To label the lunges, we use time series classification techniques with a sliding window approach. We train a labeling model that inputs a fixed length window (e.g. a 20 second window) of the time series. The network predicts whether there a lunge within some fixed time (e.g. 2 seconds) of the middle of the window. To obtain the lunge predictions, we slide the fixed-length window across the entire time series, obtain the model's predictions on these windows, and consolidate the predictions to produce the set of lunge times. Finally, we use a correction model to place the predictions closer to the true lunge times.
 
 We have tried to make this tutorial and project usable for people (particularly in the biology research community) with minimal prior python experience. 
 
@@ -18,8 +18,8 @@ cd Deep-Learning-Lunge-Detection
 To install the Python dependencies, we recommend using a virtual environment along with either anaconda or pip.  Use the following commands to make and activate the virtual environment.
 
 ```
-source venv/bin/activate
 virtualenv venv
+source venv/bin/activate
 ```
 
 Then install the required packages from requirements.txt
@@ -83,7 +83,7 @@ And the model should begin training. After each epoch, the validation set metric
  
  To train the ResNet, follow the same steps using the resnet_model.py file instead of feed_forward_model.py.
  
- Finally, to train the correction model, call
+  It is best to train the correction model after evaluating the labeling model (see below). To train the correction model, call
  
  ```
  python3 correction_model_regression.py
@@ -118,9 +118,9 @@ And the model should begin training. After each epoch, the validation set metric
  
  ![alt text](.img/uncorrected_test_error_hist.png "Uncorrected Metrics")
  
- The true positive rate is the fraction of grond truth lunges that are within tolerance_seconds of a predicted lunge.
- The false positive rate is the fraction of predicted lunges that are more than tolerance_seconds away from a ground truth lunge.
- Num overcounted is the number of extra correct predictions. (E.g. if two model predictions are near the same true label.)
+ * The true positive rate is the fraction of ground truth lunges that are within tolerance_seconds of a predicted lunge.
+ * The false positive rate is the fraction of predicted lunges that are more than tolerance_seconds away from a ground truth lunge.
+ * Number overcounted is the number of extra correct predictions. (E.g. if two model predictions are near the same true label.)
  
  The f_1 and f_2 scores are ways of combining the true positive rate and false positive rate into a single number.
  Finally the error histogram has the histogram of prediction errors in seconds. (Distance from the predicted label from the true label.)
