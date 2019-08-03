@@ -307,6 +307,6 @@ def print_model_metrics(model_metrics):
     
     distances = model_metrics['distances']
     plt.hist(distances,bins=[i*.25 for i in range(41)])
-    plt.xlabel('Prediction Error')
+    plt.xlabel('Prediction Error (seconds)')
     plt.ylabel('Number of Predictions')
-    plt.title('Error Histogram For Uncorrected Labels')
+    plt.title('Error Histogram For Label Predictions')
