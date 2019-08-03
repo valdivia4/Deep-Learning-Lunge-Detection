@@ -19,7 +19,7 @@ from utils import get_model_metrics
 from model_configs import get_config
 from train import run_training
 
-config_name = 'feed_forward_search'
+config_name = 'feed_forward'
 config = get_config(config_name)
 
 path_to_trainset = '../training_windows/label_model_windows/'
