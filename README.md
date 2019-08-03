@@ -110,7 +110,7 @@ And the model should begin training. After each epoch, the validation set metric
  
  Here is an example output on the synthetic data. The dots correspond to the true labels, and the triangles correspond to model predictions.
  
- ![alt text](readme_images/sample_plot_output.png "Sample plot output")
+ ![alt text](.img/sample_plot_output.png "Sample plot output")
  
  #### Model Metrics
  
