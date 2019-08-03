@@ -114,9 +114,25 @@ And the model should begin training. After each epoch, the validation set metric
  
  #### Model Metrics
  
- The second notebook computes various model metrics on a deployment
+ The second notebook computes various model metrics on a set of deployments. Usually these metrics are computed on the test set of deployments. Below is an example output.
  
+ ![alt text](.img/uncorrected_test_error_hist.png "Uncorrected Metrics")
  
+ The true positive rate is the fraction of grond truth lunges that are within tolerance_seconds of a predicted lunge.
+ The false positive rate is the fraction of predicted lunges that are more than tolerance_seconds away from a ground truth lunge.
+ Num overcounted is the number of extra correct predictions. (E.g. if two model predictions are near the same true label.)
+ 
+ The f_1 and f_2 scores are ways of combining the true positive rate and false positive rate into a single number.
+ Finally the error histogram has the histogram of prediction errors in seconds. (Distance from the predicted label from the true label.)
+ 
+ ###### Correction Model
+ Use the error histogram above to tune the correction model window parameters in Deep-Learning-Lunge-Detection/preprocessing/dataconfig.py. 
+ 
+ After generating the correction model windows and training the correction model, we can achieve much a much better error histogram. 
+ 
+  ![alt text](.img/corrected_test_error_hist.png "Corrected Metrics")
+ 
+ ### Labeling New Deployments
  
  
 
