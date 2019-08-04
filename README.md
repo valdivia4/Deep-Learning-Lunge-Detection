@@ -149,7 +149,7 @@ And the model should begin training. After each epoch, the validation set metric
  
  To use a model to label a new deployment, change to the Deep-Learning-Lunge-Detection/label_new_deployment directory. 
  
- Place the unlabeled deployments in the unlabeled_inputs directory. The required formatting is the same as in the preprocessing stage, and you can view the synthetic data provided in the unlabeled_inputs directory for specifics. However, the naming scheme can be different from (inputs_0, inputs_1, etc.) that was required in preprocessing.
+ Place the unlabeled deployments in the unlabeled_inputs directory. The required formatting is the same as in the preprocessing stage, and you can view the synthetic data provided in the unlabeled_inputs directory for specifics. However, the naming scheme can be different from the scheme (inputs_0, inputs_1, ...) that was required in preprocessing.
  
  Next, modify the indicated lines in label.py to pick which model to use and the correction model.  These are the same lines as in the evaluation stage, e.g.
  
@@ -158,8 +158,16 @@ And the model should begin training. After each epoch, the validation set metric
  model_name = 'ep_2_tp_0.983_fp_0.0_f_1_0.991_f_2_0.986_chain_2_thresh_0.5'
  ```
  
- To generate the labels, 
+ To generate the labels, call
  
+ ```
+ python3 label.py
+ ```
+ 
+ This call uses the model to automatically label all deployments in the unlabeled_inputs directory.
+ 
+The generated labels are saved in the newly created predicted_labels directory. 
+  
  ## Extras
  #### Future Work And Small Known Bugs
  
