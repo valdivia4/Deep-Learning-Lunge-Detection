@@ -8,17 +8,16 @@ sys.path.insert(0, '../train')
 from model_configs import get_weighted_bce
 from keras.utils.generic_utils import get_custom_objects
 
-#first load the model
 #defining custom loss function
-pos_weight = 8 #if using weighted binary crossentropy loss
+pos_weight = 1 #this setting doesn't matter here, just helps to load the model
 weighted_bce = get_weighted_bce(pos_weight)
 get_custom_objects().update({"weighted_bce": weighted_bce})
 
 #load label model
-folder = 'feed_forward_Wed_May_22_10-55-38_2019'
-model_name = 'ep_1_tp_0.977_fp_0.107_f_1_0.933_f_2_0.959_chain_4_thresh_0.9'
-
-flattened_input = True #change this depending on the model
+#SET THESE: the folder and the name of the desired label model, as well as flattened_input
+folder = 'feed_forward_Sat_Aug__3_11-51-22_2019'
+model_name = 'ep_2_tp_0.983_fp_0.0_f_1_0.991_f_2_0.986_chain_2_thresh_0.5'
+flattened_input = True #true for feed forward, false for resnet
 
 model_name_split = model_name.split('_')
 thresholds = [float(model_name_split[-1])]
