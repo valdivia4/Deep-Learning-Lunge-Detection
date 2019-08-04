@@ -64,7 +64,7 @@ which performs some preprocessing on the data and saves it .npy format in the cr
 
 Next, modify the variables in the data_config.py file to conform to your provided data. 
 
-These variables contain information about the train/dev splits, information about the deployments such as the sampling frequency, and information about the desired padded_window and window sizes for training. Information about the variable meanings are commented in the file.
+These variables contain information about the train/val/test splits, information about the deployments such as the sampling frequency, and information about the desired padded_window and window sizes for training. Information about the variable meanings are commented in the file.
 
 Then we create the windows used for training the labeling model.
 
