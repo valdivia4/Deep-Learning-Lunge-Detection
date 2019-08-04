@@ -28,6 +28,7 @@ model = keras.models.load_model('../models/label_models/' + folder + '/' + model
 def avgabs(y_true,y_pred): ##in seconds (if perturbation_max = 5*fs)
     return K.mean(K.abs(5*(y_true - y_pred)))
 
+#SET THIS: whether to use a correction model
 correction_model = keras.models.load_model('../models/correction_models/correction_model.h5', custom_objects={'avgabs': avgabs})
 #correction_model = None
 
