@@ -39,7 +39,20 @@ For training, the first step is to preprocess the data, which happens in the pre
 cd preprocessing
 ```
 
-The raw lunge files for training, validation, and testing go in the raw_data directory. We assume a .csv input where raw_data/inputs contains the time series of measurements and raw_data/labels contains the true labels of the lunges. For specifics on formatting, see the synthetic data provided in these folders.
+The raw lunge files for training, validation, and testing go in the raw_data directory. We assume a csv input where raw_data/inputs contains the time series of measurements and raw_data/labels contains the true labels of the lunges. For specifics on formatting, see the synthetic data provided in these folders.
+
+When using your own data, you need to conform to the naming scheme in the files. For example inputs should be named in the following manner
+```
+inputs_0.txt
+inputs_1.txt
+...
+```
+and labels should be named in the following manner
+```
+labels_0.txt
+labels_1.txt
+...
+```
 
 The next step is to convert the data to numpy format
 
@@ -132,7 +145,26 @@ And the model should begin training. After each epoch, the validation set metric
  
   ![alt text](.img/corrected_test_error_hist.png "Corrected Metrics")
  
- ### Labeling New Deployments
+ ### Automatically Labeling New Deployments
  
+ To use a model to label a new deployment, change to the Deep-Learning-Lunge-Detection/label_new_deployment directory. 
+ 
+ Place the unlabeled deployments in the unlabeled_inputs directory. The required formatting is the same as in the preprocessing stage, and you can view the synthetic data provided in the unlabeled_inputs directory for specifics. However, the naming scheme can be different from (inputs_0, inputs_1, etc.) that was required in preprocessing.
+ 
+ Next, modify the indicated lines in label.py to pick which model to use and the correction model.  These are the same lines as in the evaluation stage, e.g.
+ 
+  ```
+ folder = 'feed_forward_Sat_Aug__3_11-51-22_2019'
+ model_name = 'ep_2_tp_0.983_fp_0.0_f_1_0.991_f_2_0.986_chain_2_thresh_0.5'
+ ```
+ 
+ To generate the labels, 
+ 
+ ## Extras
+ #### Future Work And Small Known Bugs
+ 
+ #### Contributors
+ 
+ This project was completed by William McCloskey and Hugo Valdivia. We would like to thank the Goldbogen Lab at Hopkins Marine Station for providing the data and the problem.
  
 
