@@ -1,5 +1,6 @@
 import random
 import numpy as np 
+from keras import backend as K
 import tensorflow as tf
 
 class feed_forward_config():
@@ -111,13 +112,13 @@ def get_config(name):
 
 def get_weighted_bce(pos_weight):
     def weighted_bce(y_true,y_pred):
-        _epsilon = _to_tensor(epsilon(), output.dtype.base_dtype)
-        output = tf.clip_by_value(output, _epsilon, 1 - _epsilon)
+        epsilon = 1e-7
+        output = tf.clip_by_value(y_pred, epsilon, 1 - epsilon)
         logits = tf.log(output / (1 - output))
-        return (1/(1+pos_weight))*(tf.nn.weighted_cross_entropy_with_logits(
-                labels=y_true,
+        return (1/(1+pos_weight))*tf.nn.weighted_cross_entropy_with_logits(
+                targets=y_true,
                 logits=logits,
-                pos_weight,
+                pos_weight=pos_weight,
             )
     return weighted_bce
 
