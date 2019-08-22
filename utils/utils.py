@@ -103,7 +103,7 @@ def get_predictions(features, model, flattened_input, correction_model=None, y_p
     m=y_pred.shape[0]
     ##smooth predictions
     weights = [1,1,1,1,1]
-    # y_pred = smooth_signal(y_pred,weights)
+    y_pred = smooth_signal(y_pred,weights)
 
 #     times = np.linspace(int(secs_per_window/2), m*skip + int(secs_per_window/2),m)
     samples = [k*skip*fs+int(samples_per_window/2) for k in range(0,m)]
