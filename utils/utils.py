@@ -15,6 +15,8 @@ fs = data_config.fs
 num_features = data_config.num_features
 correction_window_s = data_config.correction_window_s
 max_exp_perturbation = data_config.max_exp_perturbation
+moving_average_len = data_config.moving_average_len
+
 
 
 def convert_unlabeled_deployment(inputs_file):
@@ -44,12 +46,15 @@ def convert_unlabeled_deployment(inputs_file):
     features = np.squeeze(features).T
     return features
 
-def smooth_signal(y_pred, weights):
+def smooth_signal(y_pred):
     ##Smooths a signal using a list of weights (weights should be length 5)
     smooth_y = np.zeros((len(y_pred),1))
-
+    
+    low = -math.floor(moving_average_len/2)
+    high = low + moving_average_len
     for i in range(len(smooth_y)):
-        nearby_vals = [y_pred[i+j]*weights[2+j] if (0<=i+j and i+j < len(y_pred)) else 0 for j in range(-2,3) ]
+        nearby_vals = [y_pred[i+j] if (0<=i+j and i+j < len(y_pred)) 
+                else 0 for j in range(low, high)]
         smooth_y[i] = np.mean(nearby_vals)
     return smooth_y
 
@@ -102,8 +107,7 @@ def get_predictions(features, model, flattened_input, correction_model=None, y_p
         y_pred = get_y_pred(features, model, flattened_input)
     m=y_pred.shape[0]
     ##smooth predictions
-    weights = [1,1,1,1,1]
-    y_pred = smooth_signal(y_pred,weights)
+    y_pred = smooth_signal(y_pred)
 
 #     times = np.linspace(int(secs_per_window/2), m*skip + int(secs_per_window/2),m)
     samples = [k*skip*fs+int(samples_per_window/2) for k in range(0,m)]

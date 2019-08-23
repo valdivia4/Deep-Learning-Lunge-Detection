@@ -14,6 +14,13 @@ class config():
         self.padded_window_s = 20 
             #total window seconds
 
+        self.moving_average_len = 3
+            #final probability at time t is the average of the neural network
+            #probabilities at times t-floor(moving_average_len/2)...
+            #t + floor(moving_average_len/2) (in seconds)
+            #a good setting should be roughly equal to window_s
+            #value should be odd
+
         #near_pos_multiple is the multiple of near positive training examples
         #to keep relative to total positive training examples (lunge is in the 
         #padded_window but not in the window)
