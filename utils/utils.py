@@ -98,9 +98,7 @@ def consolidate_times(positive_times, y_pred, time_to_pred_index, chaining_dist 
 
 def delta_class(window, correction_model, fs, max_exp_perturbation):
     probs = correction_model.predict(window) 
-    print(probs)
     pred = np.argmax(probs)
-    print(pred)
 
     return pred - fs*max_exp_perturbation
 
