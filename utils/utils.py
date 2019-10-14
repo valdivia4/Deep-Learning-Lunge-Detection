@@ -83,6 +83,27 @@ def consolidate_times(positive_times, y_pred, time_to_pred_index, chaining_dist 
             consolidated_times.append(m)
     return consolidated_times
 
+#def correct_samples(positive_samples, features, correction_model, fs):
+#    ## Places the output lunge times closer to the true lunge times
+#    scaling_factor = max_exp_perturbation
+#    window_s = correction_window_s
+#
+#    WINDOW = window_s*fs 
+#    centered_windows = [features[s-int(WINDOW/2):s+int(WINDOW/2),:] for s in positive_samples]
+#    w,f = centered_windows[0].shape
+#    centered_windows = [np.reshape(window,(1,w*f)) for window in centered_windows]
+#    delta_positive_samples = [scaling_factor*fs*correction_model.predict(window) for window in centered_windows]
+#    corrected_samples = [int(round(delta.item()+s)) for delta,s in zip(delta_positive_samples, positive_samples)]
+#    return corrected_samples
+
+def delta_class(window, correction_model, fs, max_exp_perturbation):
+    probs = correction_model.predict(window) 
+    print(probs)
+    pred = np.argmax(probs)
+    print(pred)
+
+    return pred - fs*max_exp_perturbation
+
 def correct_samples(positive_samples, features, correction_model, fs):
     ## Places the output lunge times closer to the true lunge times
     scaling_factor = max_exp_perturbation
@@ -92,8 +113,11 @@ def correct_samples(positive_samples, features, correction_model, fs):
     centered_windows = [features[s-int(WINDOW/2):s+int(WINDOW/2),:] for s in positive_samples]
     w,f = centered_windows[0].shape
     centered_windows = [np.reshape(window,(1,w*f)) for window in centered_windows]
-    delta_positive_samples = [scaling_factor*fs*correction_model.predict(window) for window in centered_windows]
-    corrected_samples = [int(round(delta.item()+s)) for delta,s in zip(delta_positive_samples, positive_samples)]
+    delta_positive_samples = [
+        delta_class(window, correction_model, fs, max_exp_perturbation)
+            for window in centered_windows
+    ]
+    corrected_samples = [int(round(delta+s)) for delta,s in zip(delta_positive_samples, positive_samples)]
     return corrected_samples
 
 def get_predictions(features, model, flattened_input, correction_model=None, y_pred=None, chaining_dist=5, threshold=0.9):
