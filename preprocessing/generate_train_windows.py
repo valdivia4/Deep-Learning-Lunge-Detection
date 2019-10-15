@@ -38,14 +38,21 @@ print('train: ', train_files)
 
 
 def is_valid_index(index, padded_window, m):
-    #returns True if the window [index,index+padded_window) is in the valid range [0, m) 
+    """returns True if the window [index,index+padded_window) is in the valid range [0, m)"""
     return (index < m-padded_window) and (index>= 0)
 
 def get_pos_and_neg_samples(X, Y, padded_window, pos_keep, near_pos_keep, rand_neg_multiple):
-    #Gets positive and negative samples for the deployment with features X and labels Y
-    #pos_keep positive samples are returned for every positive label
-    #near_pos_keep = near_pos_multiple*pos_keep nearly positive samples are kept as well as 
-    #rand_neg_keep = rand_neg_multiple*pos_keep randomly sampled negative samples
+    """
+    Gets positive and negative samples for the deployment with features X and labels Y
+
+    :param X: (np array of shape (T, num_features)) Deployment inputs
+    :param Y: (numpy array of shape (T, 1)) Deployment labels
+    :param padded_window: (int) size of the padded window in samples
+    :param pos_keep: (int) number of positive windows to keep per positive label
+    :param near_pos_keep: (int) number of near_positive windows to keep per positive label
+    :param rand_neg_multiple: (float) number of random negative samples to keep per positive sample
+    :return: pos_samples
+    """
 
     m, n = X.shape
     indices = np.where(Y == 1)[0]
@@ -89,6 +96,7 @@ def get_pos_and_neg_samples(X, Y, padded_window, pos_keep, near_pos_keep, rand_n
     return pos_samples, neg_samples
 
 def get_train_set_size():
+    """Computes the size of the training set"""
     num_train_pos, num_train_neg = 0, 0
     for i in train_files:
         X = np.load('./numpy_data/inputs/inputs_'+ str(i)+'.npy')
@@ -110,12 +118,15 @@ print ('Negative Training Examples = ' ,int(num_train_neg))
 print ('Total = ', num_train)
 
 def in_current_block(n, block_number, block_size):
-    '''Returns whether the index n is in block block_number'''
+    """Returns whether the index n is in block block_number"""
     return (n >= block_number*block_size
         and n < (block_number+1)*block_size)
 
-def save_train_set(near_pos_multiple,rand_neg_multiple, window, padded_window, 
-                 num_files, train_files, val_files, num_train, pathname = ''):
+def save_train_set():
+    """
+    Saves the training set. The training set is saved into num_train_sets blocks for memory purposes. The placement of
+    a training window is distributed i.i.d. uniformly across the entire training set.
+    """
     #Creates and saves the training set windows and trainval set windows
     #based on the given parameters
     
@@ -172,8 +183,16 @@ def save_train_set(near_pos_multiple,rand_neg_multiple, window, padded_window,
 
         assert(train_index == num_train)
 
-def save_trainval_set(near_pos_multiple,rand_neg_multiple, window, padded_window, 
-                 num_files, train_files, val_files, num_train, pathname = ''):
+def save_trainval_set(des_size):
+    """
+    Saves the trainval set. Number of windows kept is determined by des_size.
+    The windows in the trainval set have the same distribution as the training set
+    except they are drawn from the validation deployments instead of the training deployments.
+    Unlike the training set, the trainval set is saved in a single block.
+
+    :param des_size: (int) desired size of the trainval set (number of windows)
+    :return:
+    """
 
     X_trainval = []
     Y_trainval = []       
@@ -186,7 +205,6 @@ def save_trainval_set(near_pos_multiple,rand_neg_multiple, window, padded_window
         pos_samples, neg_samples = get_pos_and_neg_samples(X, Y, 
                 padded_window, pos_keep, near_pos_keep, rand_neg_multiple)
         size = len(pos_samples) + len(neg_samples)
-        des_size = 100000
         if size > des_size:
             new_pos_size = int((des_size/size)*len(pos_samples))
             pos_samples = list(np.random.choice(pos_samples, size=new_pos_size))
@@ -222,8 +240,5 @@ def save_trainval_set(near_pos_multiple,rand_neg_multiple, window, padded_window
     np.save(folder + x_trainval_name, X_trainval) 
     np.save(folder + y_trainval_name, Y_trainval)
 
-save_train_set(near_pos_multiple,rand_neg_multiple, window, padded_window, 
-                 num_files, train_files, val_files, num_train, pathname = '')
-
-save_trainval_set(near_pos_multiple,rand_neg_multiple, window, padded_window, 
-                 num_files, train_files, val_files, num_train, pathname = '')
+save_train_set()
+save_trainval_set(100000)

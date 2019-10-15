@@ -1,8 +1,11 @@
 import numpy as np 
 
 class config():
+    """Class containing variables used to generate training sets."""
     def __init__(self):
-        
+
+        # SET THE VARIABLES BELOW ACCORDING TO YOUR DATA SPECIFICATIONS:
+
         self.num_train_sets = 10 
         self.window_s = 4 
             #number of seconds for inner window, e.g.
@@ -43,6 +46,6 @@ class config():
         self.fs = 10
 
         self.num_files = 6
-        self.train_files = [0,1,2,4]
+        self.train_files = [0, 1, 2, 4]
         self.val_files = [5]
         self.test_files = [3]
