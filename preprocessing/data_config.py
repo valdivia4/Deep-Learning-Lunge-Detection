@@ -21,13 +21,13 @@ class config():
             #a good setting should be roughly equal to window_s
             #value should be odd
 
-        #near_pos_multiple is the multiple of near positive training examples
-        #to keep relative to total positive training examples (lunge is in the 
-        #padded_window but not in the window)
-        #random_neg_multiple is the multiple of randomly selected negative 
-        #examples
         self.near_pos_multiple = 0.2 
         self.rand_neg_multiple = 19.8
+            #near_pos_multiple is the multiple of near positive training 
+            #examples to keep relative to total positive training examples 
+            #(lunge is in the padded_window but not in the window)
+            #random_neg_multiple is the multiple of randomly selected 
+            #negative examples
            
         # Correction window settings
         self.num_correction_windows_per_label = 10 
