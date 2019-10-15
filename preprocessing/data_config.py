@@ -1,9 +1,7 @@
 import numpy as np 
 
 class config():
-
     def __init__(self):
-
         
         self.num_train_sets = 10 
         self.window_s = 4 
@@ -29,14 +27,16 @@ class config():
             #random_neg_multiple is the multiple of randomly selected 
             #negative examples
            
-        # Correction window settings
+        # Correction model settings
         self.num_correction_windows_per_label = 10 
             #number of windows per lunge 
-                                                   
         self.correction_window_s = 16 
             #number of seconds in correction window
         self.max_exp_perturbation = 5 
             #maximum expected mistake in labeling in seconds
+        self.std = 1.
+            #standard deviation of normal distribution used to generate
+            #perturbed window
 
         #training set info
         self.num_features = 5
