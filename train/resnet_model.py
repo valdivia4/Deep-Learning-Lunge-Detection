@@ -4,7 +4,6 @@
 
 from keras import backend as K
 import tensorflow as tf
-import datetime
 import sys
 sys.path.insert(0,'../utils')
 from model_configs import get_config
@@ -34,14 +33,10 @@ config = get_config(config_name)
 # when tuning start with learning rate->mini_batch_size -> 
 # momentum-> #hidden_units -> # learning_rate_decay -> #layers 
 import keras 
-import numpy as np 
-import pandas as pd 
-import time
+import numpy as np
 
-import matplotlib 
+import matplotlib
 matplotlib.use('agg')
-import matplotlib.pyplot as plt 
-
 
 def build_model(input_shape, nb_classes, config):
 	n_feature_maps = 64
