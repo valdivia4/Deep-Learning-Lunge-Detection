@@ -18,8 +18,6 @@ Y_train = np.load('../training_windows/correction_model_windows/Y_train_class.np
 X_val = np.load('../training_windows/correction_model_windows/X_val.npy')
 Y_val = np.load('../training_windows/correction_model_windows/Y_val_class.npy')
 
-print (X_train.shape)
-
 m_train, w, f = X_train.shape
 m_val, __, __  = X_val.shape
 X_train_f = np.reshape(X_train, (m_train, w*f))
@@ -51,4 +49,4 @@ model.fit(X_train_f, Y_train, epochs=100, validation_data=(X_val_f,Y_val),batch_
 folder = '../models/correction_models/'
 if not os.path.exists(folder):
     os.makedirs(folder)
-model.save(folder + 'correction_model.h5')
+model.save(folder + 'correction_model_class.h5')

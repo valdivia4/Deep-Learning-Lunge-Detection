@@ -5,7 +5,6 @@ import numpy as np
 from keras.models import Sequential
 from keras.layers import Dense, Activation
 from keras.layers.normalization import BatchNormalization
-from keras.optimizers import Adam
 from keras import backend as K
 
 sys.path.append('../preprocessing/')
@@ -51,4 +50,4 @@ model.fit(X_train_f, Y_train, epochs=25, validation_data=(X_val_f,Y_val),batch_s
 folder = '../models/correction_models/'
 if not os.path.exists(folder):
     os.makedirs(folder)
-model.save(folder + 'correction_model.h5')
+model.save(folder + 'correction_model_reg.h5')
