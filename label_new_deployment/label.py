@@ -33,9 +33,9 @@ def avgabs(y_true,y_pred): ##in seconds (if perturbation_max = 5*fs)
 # SET THIS: choose which correction model to use by uncommenting the appropriate
 # line below
 
-#corr_model_type = 'classification'
+corr_model_type = 'classification'
 #corr_model_type = 'regression'
-corr_model_type = None
+#corr_model_type = None
 
 if corr_model_type == 'classification':
     correction_model = keras.models.load_model('../models/correction_models/correction_model_class.h5')
