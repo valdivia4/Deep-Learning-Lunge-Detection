@@ -10,6 +10,9 @@ from keras import backend as K
 sys.path.append('../preprocessing/')
 from data_config import config as data_config
 
+#SET THIS:
+num_epochs = 100
+
 config = data_config()
 
 X_train = np.load('../training_windows/correction_model_windows/X_train.npy')
@@ -28,11 +31,13 @@ input_dim = w*f
 
 model = Sequential([
     Dense(32, input_dim=input_dim),
-    Activation('relu'),
     BatchNormalization(),
+    Activation('relu'),
     Dense(20),
+    BatchNormalization(),
     Activation('relu'),
     Dense(5),
+    BatchNormalization(),
     Activation('relu'),
     Dense(1),
     Activation('tanh')
@@ -45,7 +50,8 @@ model.compile(optimizer='adam',
               loss='mean_squared_error',
               metrics=[avgabs])
 
-model.fit(X_train_f, Y_train, epochs=25, validation_data=(X_val_f,Y_val),batch_size=32)
+model.fit(X_train_f, Y_train, epochs=num_epochs,
+          validation_data=(X_val_f,Y_val), batch_size=32)
 
 folder = '../models/correction_models/'
 if not os.path.exists(folder):

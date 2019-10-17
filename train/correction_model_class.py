@@ -5,11 +5,12 @@ import numpy as np
 from keras.models import Sequential
 from keras.layers import Dense, Activation
 from keras.layers.normalization import BatchNormalization
-from keras.optimizers import Adam
-from keras import backend as K
 
 sys.path.append('../preprocessing/')
 from data_config import config as data_config
+
+#SET THIS:
+num_epochs = 100
 
 config = data_config()
 
@@ -28,8 +29,8 @@ num_bins = 2*config.fs*config.max_exp_perturbation
 
 model = Sequential([
     Dense(32, input_dim=input_dim),
-    Activation('relu'),
     BatchNormalization(),
+    Activation('relu'),
     Dense(20),
     BatchNormalization(),
     Activation('relu'),
@@ -44,7 +45,8 @@ model.compile(optimizer='adam',
               loss='mean_squared_error',
               metrics=['acc'])
 
-model.fit(X_train_f, Y_train, epochs=100, validation_data=(X_val_f,Y_val),batch_size=32)
+model.fit(X_train_f, Y_train, epochs=num_epochs,
+          validation_data=(X_val_f,Y_val), batch_size=32)
 
 folder = '../models/correction_models/'
 if not os.path.exists(folder):
