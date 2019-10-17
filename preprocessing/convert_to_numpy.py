@@ -5,7 +5,10 @@ import pandas as pd
 
 
 def normalize(features):
-    """Normalizes the deployment given by features (so that each feature has 0 mean 1 standard deviation)"""
+    """
+    Normalizes the deployment given by features (so that each
+    feature has 0 mean 1 standard deviation)
+    """
 
     ave = np.nanmean(features, axis=0)
     std = np.nanstd(features, axis=0)
@@ -25,7 +28,8 @@ def clean_data(features):
 
 def process_csv(raw_path, filename, is_input=True):
     """
-    Reads a multivariate time series from a csv and returns the cleaned result as a numpy array.
+    Reads a multivariate time series from a csv and returns the
+    cleaned result as a numpy array.
 
     :param raw_path: (str) path to the csv
     :param filename: (str) csv file name
@@ -40,7 +44,11 @@ def process_csv(raw_path, filename, is_input=True):
     return result
 
 def convert_csvs_to_numpy():
-    """Cleans the csv deployments and converts them to numpy arrays."""
+    """
+    Cleans the csv deployments in the raw_data folder and converts
+    them to numpy arrays. The numpy arrays are saved in a newly created
+    numpy_data folder.
+    """
 
     for directory in os.listdir("./raw_data"):
         if directory.startswith("."): continue

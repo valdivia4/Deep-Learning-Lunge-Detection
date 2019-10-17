@@ -1,5 +1,4 @@
 import os
-import random
 
 import numpy as np
 from sklearn.utils import shuffle
@@ -24,8 +23,8 @@ Y_test_regression = []
 Y_test_class = []
 
 for i in range(config.num_files):
-    X = np.load('./numpy_data/inputs/inputs_'+ str(i)+'.npy')
-    Y = np.load('./numpy_data/labels/labels_'+ str(i)+'.npy')
+    X = np.load('./numpy_data/inputs/inputs_' + str(i) + '.npy')
+    Y = np.load('./numpy_data/labels/labels_' + str(i) + '.npy')
     
     indices = np.where(Y == 1)[0]
     
@@ -38,7 +37,10 @@ for i in range(config.num_files):
             digit_delta = np.digitize(scaled_delta, bins, right=True)
             class_delta = np.zeros((1, num_bins))
             class_delta[0, digit_delta] = 1
-            x = X[window_center-int(samples_per_window/2):window_center+int(samples_per_window/2),:]
+
+            l = window_center - int(samples_per_window/2)
+            r = l + samples_per_window
+            x = X[l:r, :]
 
             if x.shape != (samples_per_window, config.num_features):
                 continue

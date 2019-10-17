@@ -203,8 +203,7 @@ def save_trainval_set(max_size):
 
     X_trainval = []
     Y_trainval = []       
-     
-        
+
     for i in val_files:
         X = np.load('./numpy_data/inputs/inputs_'+ str(i)+'.npy')
         Y = np.load('./numpy_data/labels/labels_'+ str(i)+'.npy')
@@ -231,7 +230,7 @@ def save_trainval_set(max_size):
             Y_trainval.append(y)
 
     X_trainval = np.stack(X_trainval)
-    Y_trainval = np.reshape(np.stack(Y_trainval), (len(Y_trainval),1))
+    Y_trainval = np.reshape(np.stack(Y_trainval), (len(Y_trainval), 1))
 
     print('Trainval set shapes:')
     print('X_trainval: ', X_trainval.shape)
