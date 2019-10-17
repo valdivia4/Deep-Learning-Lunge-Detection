@@ -42,7 +42,7 @@ model = Sequential([
 ])
 
 model.compile(optimizer='adam',
-              loss='mean_squared_error',
+              loss='categorical_crossentropy',
               metrics=['acc'])
 
 model.fit(X_train_f, Y_train, epochs=num_epochs,
