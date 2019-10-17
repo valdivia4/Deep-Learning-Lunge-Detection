@@ -10,7 +10,7 @@ from data_config import config as data_config
 
 config = data_config()
 
-#read config variables
+# read config variables
 num_train_sets = config.num_train_sets
 window_s = config.window_s
 near_pos_multiple = config.near_pos_multiple 
@@ -23,7 +23,7 @@ train_files = config.train_files
 val_files = config.val_files
 test_files = config.test_files
 
-#get variables in samples instead of seconds
+# get variables in samples instead of seconds
 window = window_s*fs
 padding = int((padded_window_s-window_s)/2) * fs
 padded_window = 2*padding+window
@@ -37,27 +37,32 @@ print('val: ',val_files)
 print('train: ', train_files)
 
 
-def is_valid_index(index, padded_window, m):
-    """returns True if the window [index,index+padded_window) is in the valid range [0, m)"""
-    return (index < m-padded_window) and (index>= 0)
+def is_valid_index(index, m):
+    """returns True if [index,index+padded_window) is in the valid range [0, m)"""
 
-def get_pos_and_neg_samples(X, Y, padded_window, pos_keep, near_pos_keep, rand_neg_multiple):
+    return (index < m-padded_window) and (index >= 0)
+
+
+def get_pos_and_neg_samples(X, Y):
     """
-    Gets positive and negative samples for the deployment with features X and labels Y
+    Gets positive and negative samples for the deployment with features
+    X and labels Y
 
     :param X: (np array of shape (T, num_features)) Deployment inputs
     :param Y: (numpy array of shape (T, 1)) Deployment labels
     :param padded_window: (int) size of the padded window in samples
     :param pos_keep: (int) number of positive windows to keep per positive label
-    :param near_pos_keep: (int) number of near_positive windows to keep per positive label
-    :param rand_neg_multiple: (float) number of random negative samples to keep per positive sample
+    :param near_pos_keep: (int) number of near_positive windows to keep
+                                per positive label
+    :param rand_neg_multiple: (float) number of random negative samples to
+                                keep per positive sample
     :return: pos_samples
     """
 
     m, n = X.shape
     indices = np.where(Y == 1)[0]
 
-    #get positive samples
+    # get positive samples
     pos_samples = set([])
     near_pos_samples = set([])
     for ind in indices:
@@ -69,7 +74,7 @@ def get_pos_and_neg_samples(X, Y, padded_window, pos_keep, near_pos_keep, rand_n
                 pos_samples.add(k)
                 count+=1
 
-        #choose near_pos_keep near positive indices per positive example
+        # choose near_pos_keep near positive indices per positive example
         diff = list(range(padding))+ list(range(padding+window + 1, 
                 2*padding+window+1))
         near_pos_indices = [ind-w for w in diff]
@@ -80,7 +85,7 @@ def get_pos_and_neg_samples(X, Y, padded_window, pos_keep, near_pos_keep, rand_n
             if is_valid_index(k, padded_window, m):
                 near_pos_samples.add(k)
                 
-    #neg times that haven't been selected
+    # neg times that haven't been selected
     unselected_neg_samples = set(
             [ind for ind in range(0,m-padded_window) 
                 if is_valid_index(ind, padded_window, m)]
@@ -95,15 +100,15 @@ def get_pos_and_neg_samples(X, Y, padded_window, pos_keep, near_pos_keep, rand_n
     pos_samples = list(pos_samples)
     return pos_samples, neg_samples
 
+
 def get_train_set_size():
     """Computes the size of the training set"""
+
     num_train_pos, num_train_neg = 0, 0
     for i in train_files:
         X = np.load('./numpy_data/inputs/inputs_'+ str(i)+'.npy')
         Y = np.load('./numpy_data/labels/labels_'+ str(i)+'.npy')
-        pos_samples, neg_samples = get_pos_and_neg_samples(
-                X, Y, padded_window, pos_keep, near_pos_keep, rand_neg_multiple
-        )
+        pos_samples, neg_samples = get_pos_and_neg_samples(X, Y)
         num_pos, num_neg = len(pos_samples), len(neg_samples)
        
         num_train_pos += num_pos
@@ -113,28 +118,30 @@ def get_train_set_size():
 
 # Find out how big training data is:
 num_train_pos, num_train_neg, num_train = get_train_set_size()
-print ('Positive Training Examples = ',int(num_train_pos))
-print ('Negative Training Examples = ' ,int(num_train_neg))
+print ('Positive Training Examples = ', int(num_train_pos))
+print ('Negative Training Examples = ', int(num_train_neg))
 print ('Total = ', num_train)
+
 
 def in_current_block(n, block_number, block_size):
     """Returns whether the index n is in block block_number"""
-    return (n >= block_number*block_size
-        and n < (block_number+1)*block_size)
+    return n >= block_number*block_size and n < (block_number+1)*block_size
+
 
 def save_train_set():
     """
-    Saves the training set. The training set is saved into num_train_sets blocks for memory purposes. The placement of
-    a training window is distributed i.i.d. uniformly across the entire training set.
+    Saves the training set. The training set is saved into num_train_sets blocks
+    for memory purposes. The placement of a training window is distributed i.i.d.
+    uniformly across the entire training set.
     """
-    #Creates and saves the training set windows and trainval set windows
-    #based on the given parameters
+    # Creates and saves the training set windows and trainval set windows
+    # based on the given parameters
     
-    #size of each training set block 
+    # size of each training set block
     train_block_size = int(math.ceil(num_train/num_train_sets))
     train_shuffle = np.random.permutation(num_train)
     
-    #make num_train_sets train sets indexed by j
+    # make num_train_sets train sets indexed by j
     for j in range(num_train_sets):
         X_train = np.zeros((train_block_size,padded_window, num_features))
         Y_train = np.zeros((train_block_size,1))
@@ -143,9 +150,7 @@ def save_train_set():
         for i in train_files:
             X = np.load('./numpy_data/inputs/inputs_'+ str(i)+'.npy')
             Y = np.load('./numpy_data/labels/labels_'+ str(i)+'.npy')
-            pos_samples, neg_samples = get_pos_and_neg_samples(X, Y, 
-                    padded_window, pos_keep, near_pos_keep, rand_neg_multiple
-            )
+            pos_samples, neg_samples = get_pos_and_neg_samples(X, Y)
             for index in pos_samples:
                 x = X[index:index+padded_window,:]
                 y = 1
@@ -183,12 +188,14 @@ def save_train_set():
 
         assert(train_index == num_train)
 
-def save_trainval_set(des_size):
+
+def save_trainval_set(max_size):
     """
     Saves the trainval set. Number of windows kept is determined by des_size.
-    The windows in the trainval set have the same distribution as the training set
-    except they are drawn from the validation deployments instead of the training deployments.
-    Unlike the training set, the trainval set is saved in a single block.
+    The windows in the trainval set have the same distribution as the training
+    set except they are drawn from the validation deployments instead of the
+    training deployments. Unlike the training set, the trainval set is saved
+    in a single block.
 
     :param des_size: (int) desired size of the trainval set (number of windows)
     :return:
@@ -202,10 +209,9 @@ def save_trainval_set(des_size):
         X = np.load('./numpy_data/inputs/inputs_'+ str(i)+'.npy')
         Y = np.load('./numpy_data/labels/labels_'+ str(i)+'.npy')
         
-        pos_samples, neg_samples = get_pos_and_neg_samples(X, Y, 
-                padded_window, pos_keep, near_pos_keep, rand_neg_multiple)
+        pos_samples, neg_samples = get_pos_and_neg_samples(X, Y)
         size = len(pos_samples) + len(neg_samples)
-        if size > des_size:
+        if size > max_size:
             new_pos_size = int((des_size/size)*len(pos_samples))
             pos_samples = list(np.random.choice(pos_samples, size=new_pos_size))
             
@@ -231,7 +237,7 @@ def save_trainval_set(des_size):
     print('X_trainval: ', X_trainval.shape)
     print('Y_trainval: ', Y_trainval.shape)
 
-    #save trainval sets
+    # save trainval sets
     folder = "../training_windows/label_model_windows/"
     x_trainval_name = "X_trainval_npm_{}_rnm_{}.npy".format(
                 near_pos_multiple, rand_neg_multiple)
@@ -241,4 +247,5 @@ def save_trainval_set(des_size):
     np.save(folder + y_trainval_name, Y_trainval)
 
 save_train_set()
-save_trainval_set(100000)
+max_size = 100000
+save_trainval_set(max_size)
