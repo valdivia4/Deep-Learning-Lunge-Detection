@@ -15,27 +15,29 @@ pos_weight = 1 #this setting doesn't matter here, just helps to load the model
 weighted_bce = get_weighted_bce(pos_weight)
 get_custom_objects().update({"weighted_bce": weighted_bce})
 
-#load label model
-#SET THESE: the folder and the name of the desired label model, as well as flattened_input
-folder = 'feed_forward_Tue_Oct__1_16-54-25_2019'
-model_name = 'ep_1_tp_0.966_fp_0.0_f_1_0.982_f_2_0.972_chain_2_thresh_0.5'
-flattened_input = True #true for feed forward, false for resnet
-
-model_name_split = model_name.split('_')
-thresholds = [float(model_name_split[-1])]
-chaining_dists = [float(model_name_split[-3])]
-model = keras.models.load_model('../models/label_models/' + folder + '/' + model_name,
-                               custom_objects={'loss': weighted_bce })
-
-def avgabs(y_true,y_pred): ##in seconds (if perturbation_max = 5*fs)
-    return K.mean(K.abs(5*(y_true - y_pred)))
-
 # SET THIS: choose which correction model to use by uncommenting the appropriate
 # line below
 
 corr_model_type = 'classification'
 #corr_model_type = 'regression'
 #corr_model_type = None
+
+# SET THESE: the folder and the name of the desired label model, as well as flattened_input
+folder = 'feed_forward_Tue_Oct__1_16-54-25_2019'
+model_name = 'ep_1_tp_0.966_fp_0.0_f_1_0.982_f_2_0.972_chain_2_thresh_0.5'
+flattened_input = True #true for feed forward, false for resnet
+
+# load label model
+model_name_split = model_name.split('_')
+thresholds = [float(model_name_split[-1])]
+chaining_dists = [float(model_name_split[-3])]
+model = keras.models.load_model('../models/label_models/' + folder + '/' + model_name,
+                               custom_objects={'loss': weighted_bce })
+
+
+def avgabs(y_true,y_pred): ##in seconds (if perturbation_max = 5*fs)
+    return K.mean(K.abs(5*(y_true - y_pred)))
+
 
 if corr_model_type == 'classification':
     correction_model = keras.models.load_model('../models/correction_models/correction_model_class.h5')
