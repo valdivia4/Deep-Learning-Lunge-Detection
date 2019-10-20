@@ -90,6 +90,7 @@ def consolidate_prediction_times(
             consolidated_times.append(m)
     return consolidated_times
 
+
 def correct_samples_regression(positive_samples, features, correction_model, fs):
     """
     Uses the regression correction model to place the output lunge times
@@ -112,6 +113,7 @@ def correct_samples_regression(positive_samples, features, correction_model, fs)
                          zip(delta_positive_samples, positive_samples)]
     return corrected_samples
 
+
 def delta_class(window, correction_model, fs, max_exp_perturbation):
     """
     Helper function for correct_samples_class.
@@ -120,6 +122,7 @@ def delta_class(window, correction_model, fs, max_exp_perturbation):
     pred = np.argmax(probs)
 
     return pred - fs*max_exp_perturbation
+
 
 def correct_samples_class(positive_samples, features, correction_model, fs):
     """
@@ -140,6 +143,7 @@ def correct_samples_class(positive_samples, features, correction_model, fs):
     corrected_samples = [int(round(delta+s)) for delta, s in
                          zip(delta_positive_samples, positive_samples)]
     return corrected_samples
+
 
 def correct_samples(positive_samples, features, correction_model, corr_model_type):
     """
@@ -217,15 +221,20 @@ def get_predictions(
 
     positive_times = [t for t in times if y_pred[time_to_pred_index[t]][0] > 0.5]
 
-    positive_times = consolidate_prediction_times(positive_times, y_pred, time_to_pred_index, chaining_dist, threshold)
+    positive_times = consolidate_prediction_times(
+        positive_times, y_pred, time_to_pred_index, chaining_dist, threshold
+    )
     positive_samples = [time_to_sample[t] for t in positive_times]
 
     if correction_model is not None:
-        positive_samples = correct_samples(positive_samples, features, correction_model, corr_model_type)
+        positive_samples = correct_samples(
+            positive_samples, features, correction_model, corr_model_type
+        )
 
     positive_times = [s/fs for s in positive_samples]
 
     return positive_samples, positive_times
+
 
 def get_y_pred(features, model, flattened_input):
     """
@@ -398,7 +407,8 @@ def get_model_metrics(evaluation_files, model, flattened_input, tolerance_s,
             best_f_1 = f_1
         
     return best_model_metrics
-    
+
+
 def print_model_metrics(model_metrics):
     """
     Prints the evaluation metrics given in model_metrics.
