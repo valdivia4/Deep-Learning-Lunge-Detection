@@ -84,7 +84,7 @@ python3 generate_correction_model_windows
 
 The next step is to train a labeling model. To do so, move to the Deep-Learning-Lunge-Detection/train directory.
 
-There are two classes of models we currently support: a feed forward network and a 1D-ResNet. To design a models, edit the the appropriate variables in the model_configs file. (See the file comments for information on these variables.)
+There are two classes of models we currently support: a feed forward network and a 1D-ResNet. To design a model, edit the the appropriate variables in the model_configs file. (See the file comments for information on these variables.)
 
 Next, set the config_name in the appropriate file. We will use the feed forward network here with the default feed_forward_config settings. So we would set config_name='feed_forward' in feed_forward_model.py. To train the model, we call
 
