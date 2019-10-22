@@ -91,7 +91,7 @@ def consolidate_prediction_times(
     return consolidated_times
 
 
-def correct_samples_regression(positive_samples, features, correction_model, fs):
+def correct_samples_regression(positive_samples, features, correction_model):
     """
     Uses the regression correction model to place the output lunge times
     closer to the true lunge times.
@@ -114,7 +114,7 @@ def correct_samples_regression(positive_samples, features, correction_model, fs)
     return corrected_samples
 
 
-def delta_class(window, correction_model, fs, max_exp_perturbation):
+def delta_class(window, correction_model, max_exp_perturbation):
     """
     Helper function for correct_samples_class.
     """
@@ -124,7 +124,7 @@ def delta_class(window, correction_model, fs, max_exp_perturbation):
     return pred - fs*max_exp_perturbation
 
 
-def correct_samples_class(positive_samples, features, correction_model, fs):
+def correct_samples_class(positive_samples, features, correction_model):
     """
     Uses the regression correction model to place the output lunge times
     closer to the true lunge times.
@@ -137,7 +137,7 @@ def correct_samples_class(positive_samples, features, correction_model, fs):
     w, f = centered_windows[0].shape
     centered_windows = [np.reshape(window, (1, w*f)) for window in centered_windows]
     delta_positive_samples = [
-        delta_class(window, correction_model, fs, max_exp_perturbation)
+        delta_class(window, correction_model, max_exp_perturbation)
         for window in centered_windows
     ]
     corrected_samples = [int(round(delta+s)) for delta, s in
@@ -328,7 +328,6 @@ def get_model_metrics(evaluation_files, model, flattened_input, tolerance_s,
     chaining_dists = sorted(chaining_dists, reverse=True)
     thresholds = sorted(thresholds, reverse=True)
     for chaining_dist, threshold in itertools.product(chaining_dists, thresholds):
-        print(chaining_dist, threshold)
         tot_correct_dist = 0  # dist in seconds
         total_correct = 0
         total_true = 0
