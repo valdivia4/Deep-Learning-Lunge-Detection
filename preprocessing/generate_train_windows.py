@@ -70,7 +70,7 @@ def get_pos_and_neg_samples(X, Y):
         pos_indices = np.random.choice(pos_indices, pos_keep,replace=False)
         count = 0
         for k in pos_indices:
-            if is_valid_index(k, padded_window, m):
+            if is_valid_index(k, m):
                 pos_samples.add(k)
                 count+=1
 
@@ -82,13 +82,13 @@ def get_pos_and_neg_samples(X, Y):
             near_pos_indices, near_pos_keep, replace=False
         )
         for k in near_pos_indices:
-            if is_valid_index(k, padded_window, m):
+            if is_valid_index(k, m):
                 near_pos_samples.add(k)
                 
     # neg times that haven't been selected
     unselected_neg_samples = set(
             [ind for ind in range(0,m-padded_window) 
-                if is_valid_index(ind, padded_window, m)]
+                if is_valid_index(ind, m)]
     )
     unselected_neg_samples = ((unselected_neg_samples - pos_samples) 
                                 - near_pos_samples)
