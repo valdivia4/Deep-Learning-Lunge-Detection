@@ -325,7 +325,10 @@ def get_model_metrics(evaluation_files, model, flattened_input, tolerance_s,
 
     best_model_metrics = {}
     best_f_1 = -float('inf')
+    chaining_dists = sorted(chaining_dists, reverse=True)
+    thresholds = sorted(thresholds, reverse=True)
     for chaining_dist, threshold in itertools.product(chaining_dists, thresholds):
+        print(chaining_dist, threshold)
         tot_correct_dist = 0  # dist in seconds
         total_correct = 0
         total_true = 0
