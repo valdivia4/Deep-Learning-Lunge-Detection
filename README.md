@@ -141,7 +141,7 @@ And the model should begin training. After each epoch, the validation set metric
  ###### Correction Model
  Use the error histogram above to tune the correction model window parameters in Deep-Learning-Lunge-Detection/preprocessing/dataconfig.py. 
  
- After generating the correction model windows and training the correction model, we can achieve much a much better error histogram. 
+ After generating the correction model windows and training the correction model, we can achieve much a much better error histogram. These are the model metrics using the classification correction model.
  
   ![alt text](.img/corrected_test_error_hist.png "Corrected Metrics")
  
