@@ -167,16 +167,37 @@ And the model should begin training. After each epoch, the validation set metric
  This call uses the model to automatically label all deployments in the unlabeled_inputs directory.
  
 The generated labels are saved in the newly created predicted_labels directory. 
+
+## Results
+
+Here we provide our results for two different whale species: blue whales and minke whales. For each species, we had roughly 5000 lunges hand-labeled by researchers at the Goldbogen lab. The blue whale data was collected over 29 accelerometer tag deployments, and the minke whale data was collected over 6 tag deployments. We found the classification correction model to have better performance than the regression model.
+
+### Blue Whales
+
+#### Feed Forward Network
+
+Without correction:
+![alt text](.img/bw_test_ff_none.png "Feed Forward None")
+
+With correction:
+![alt text](.img/bw_test_ff_class.png "Feed Forward Classification")
+
+#### Resnet
+
+Without correction:
+![alt text](.img/bw_test_resnet_none.png "Resnet None")
+
+With correction:
+![alt text](.img/bw_test_resnet_class.png "Resnet Classification")
+
   
  ## Extras
- #### Future Work And Small Known Bugs
+ #### Small Known Bugs
 
  Here are some minor issues we are aware of and need to fix:
  
  * It is possible to run out of memory on very long deployments.
  * If the number of overcounted lunges is not 0 in the model metrics (i.e. if two predictions are close to the same lunge), the values for the true positive rates and the false positive rates will be wrong. These numbers can be calculated by hand by subtracting the number of overcounted lunges from the number of correct lunges.
- 
- For the future, we would like to use a softmax correction model with bins instead of a regression one. We would also like to include more models such as Fully Convolutional Networks.
  
  #### Contributors
  
