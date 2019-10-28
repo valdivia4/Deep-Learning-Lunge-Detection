@@ -170,7 +170,7 @@ The generated labels are saved in the newly created predicted_labels directory.
 
 ## Results
 
-Here we provide our results for two different whale species: blue whales and minke whales. For each species, we had roughly 5000 lunges hand-labeled by researchers at the Goldbogen lab. The blue whale data was collected over 29 accelerometer tag deployments, and the minke whale data was collected over 6 tag deployments. We found the classification correction model to have better performance than the regression model.
+Here we provide our results for two different whale species: blue whales and minke whales. For each species, we had roughly 5000 lunges hand-labeled by researchers at the Goldbogen lab. The blue whale data was collected over 29 accelerometer tag deployments, and the minke whale data was collected over 6 tag deployments. We used the following features: speed, pitch, pressure (proxy for depth), jerk, and roll. We used the classification correction model since we found it to have better performance than the regression model.
 
 ### Blue Whales
 
@@ -182,7 +182,7 @@ Without correction:
 With correction:
 ![alt text](.img/bw_test_ff_class.png "Feed Forward Classification")
 
-#### Resnet
+#### ResNet
 
 Without correction:
 ![alt text](.img/bw_test_resnet_none.png "Resnet None")
@@ -190,7 +190,28 @@ Without correction:
 With correction:
 ![alt text](.img/bw_test_resnet_class.png "Resnet Classification")
 
-  
+ ### Minke Whales
+
+#### Feed Forward Network
+
+Without correction:
+
+![alt text](.img/bb_test_ff_none.png "Feed Forward None")
+
+With correction:
+
+![alt text](.img/bb_test_ff_class.png "Feed Forward Classification")
+
+#### ResNet
+
+Without correction:
+
+![alt text](.img/bb_test_resnet_none.png "Resnet None")
+
+With correction:
+
+![alt text](.img/bb_test_resnet_class.png "Resnet Classification")
+
  ## Extras
  #### Small Known Bugs
 
