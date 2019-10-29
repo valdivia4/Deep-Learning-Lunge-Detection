@@ -97,10 +97,14 @@ And the model should begin training. After each epoch, the validation set metric
  To train the ResNet, follow the same steps using the resnet_model.py file instead of feed_forward_model.py.
  
   It is best to train the correction model after evaluating the labeling model (see below). To train the correction model, call
- 
  ```
  python3 correction_model_regression.py
  ```
+ or
+ ```
+ python3 correction_model_class.py
+ ```
+ The classification correction model performed better than the regression correction model for us.
  
  ### Evaluation
  
