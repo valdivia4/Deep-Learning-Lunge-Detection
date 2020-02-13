@@ -197,8 +197,8 @@ def get_predictions(
                                 y_pred is computed
     :param chaining_dist: (float) chaining distance used for corrections
     :param threshold: (float) threshold used for corrections
-    :return: (list) prediction times
-             (list) prediction samples
+    :return: (list) prediction samples
+             (list) prediction times
     """
 
     skip = 1
