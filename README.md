@@ -28,6 +28,8 @@ Then install the required packages from requirements.txt
 pip3 install -r requirements.txt
 ```
 
+Note: throughout some users may find the commands pip and python to work instead of pip3 and python3.
+
 ## Example Usage
 
 We include synthetic data with the project and recommend to run the code first with this synthetic data. The steps for using your own data will be mostly identical. Here we run through example usage using the synthetic data.
