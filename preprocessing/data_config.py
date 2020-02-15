@@ -12,7 +12,7 @@ class config():
             # window_s = 4 means a window is labeled 1 if
             # there is a lunge within 2 seconds of the middle
         
-        self.padded_window_s = 20 
+        self.padded_window_s = 40 
             # total window seconds
 
         self.moving_average_len = 3
@@ -49,3 +49,6 @@ class config():
         self.train_files = [0, 1, 2, 4]
         self.val_files = [5]
         self.test_files = [3]
+
+        #change seed for different randomness in training set
+        self.seed = 2

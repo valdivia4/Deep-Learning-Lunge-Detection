@@ -11,6 +11,7 @@ from data_config import config as data_config
 config = data_config()
 
 # read config variables
+seed = config.seed
 num_train_sets = config.num_train_sets
 window_s = config.window_s
 near_pos_multiple = config.near_pos_multiple 
@@ -58,6 +59,7 @@ def get_pos_and_neg_samples(X, Y):
                                 keep per positive sample
     :return: pos_samples
     """
+    np.random.seed(seed)
 
     m, n = X.shape
     indices = np.where(Y == 1)[0]
