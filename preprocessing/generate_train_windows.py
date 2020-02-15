@@ -199,7 +199,7 @@ def save_trainval_set(max_size):
     training deployments. Unlike the training set, the trainval set is saved
     in a single block.
 
-    :param des_size: (int) desired size of the trainval set (number of windows)
+    :param max_size: (int) desired size of the trainval set (number of windows)
     :return:
     """
 
@@ -213,10 +213,10 @@ def save_trainval_set(max_size):
         pos_samples, neg_samples = get_pos_and_neg_samples(X, Y)
         size = len(pos_samples) + len(neg_samples)
         if size > max_size:
-            new_pos_size = int((des_size/size)*len(pos_samples))
+            new_pos_size = int((max_size/size)*len(pos_samples))
             pos_samples = list(np.random.choice(pos_samples, size=new_pos_size))
             
-            new_neg_size = int((des_size/size)*len(neg_samples))
+            new_neg_size = int((max_size/size)*len(neg_samples))
             neg_samples = list(np.random.choice(neg_samples, size=new_neg_size))
 
         for index in pos_samples:
