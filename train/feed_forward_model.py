@@ -19,7 +19,7 @@ from utils import get_model_metrics
 from model_configs import get_config
 from train import run_training
 
-config_name = 'feed_forward'
+config_name = 'feed_forward_search'
 config = get_config(config_name)
 
 path_to_trainset = '../training_windows/label_model_windows/'
@@ -32,14 +32,14 @@ def build_model(config):
     model = Sequential()
     if len(config.hidden_layers) > 0:
         model.add(Dense(config.hidden_layers[0], input_dim=input_dim, kernel_regularizer=l2(config.l2_reg)))
-        model.add(Activation(config.activation))
         if config.batch_norm:
             model.add(BatchNormalization())
+        model.add(Activation(config.activation))
         for n in config.hidden_layers[1:]:
             model.add(Dense(n))
-            model.add(Activation(config.activation))
             if config.batch_norm:
                 model.add(BatchNormalization())
+            model.add(Activation(config.activation))
     model.add(Dense(1))
     model.add(Activation(config.output_activation))
 
@@ -54,6 +54,7 @@ num_trainings = 20 #used for model hyperparameter searching
 for __ in range(num_trainings):
     config = get_config(config_name) #randomly initialized config for hyperparameter search
     model = build_model(config)
+    model.summary()
     run_training(model, config)
     if not config.hyper_search:
         break
