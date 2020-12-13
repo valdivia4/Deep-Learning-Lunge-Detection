@@ -248,5 +248,5 @@ def save_trainval_set(max_size):
     np.save(folder + y_trainval_name, Y_trainval)
 
 save_train_set()
-max_size = 100000
+max_size = 100000/len(val_files)
 save_trainval_set(max_size)
