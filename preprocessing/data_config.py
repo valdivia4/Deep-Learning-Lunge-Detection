@@ -30,6 +30,11 @@ class config():
             # random_neg_multiple is the multiple of randomly selected
             # negative examples
            
+        #lowpass filter
+        self.use_lowpass_filter = True
+        self.cutoff = 0.1
+        self.order = 6
+
         # Correction model settings
         self.num_correction_windows_per_label = 10 
             # number of windows per lunge

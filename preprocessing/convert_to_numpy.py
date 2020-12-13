@@ -3,26 +3,64 @@ import os
 import numpy as np
 import pandas as pd
 
+from scipy.signal import butter, filtfilt, freqz
 
-def normalize(features):
+from data_config import config 
+
+data_config = config()
+use_lowpass_filter = data_config.use_lowpass_filter
+order = data_config.order
+cutoff = data_config.cutoff
+fs = data_config.fs
+
+def butter_lowpass():
+    nyq = 0.5 * fs
+    normal_cutoff = cutoff / nyq
+    b, a = butter(order, normal_cutoff, btype='low', analog=False)
+    return b, a
+
+def butter_lowpass_filter(x):
+    b, a = butter_lowpass()
+    y = filtfilt(b, a, x, axis=0)
+    return y
+
+def filter_data(x):
+    # Filter requirements.
+    x = butter_lowpass_filter(x)
+    return x
+
+def shift(features):
     """
     Normalizes the deployment given by features (so that each
     feature has 0 mean 1 standard deviation)
     """
 
     ave = np.nanmean(features, axis=0)
-    std = np.nanstd(features, axis=0)
-    return (features - ave) / std
+    features = features - ave
+    return features
 
+def rescale(features):
+    num_features = features.shape[1]
+    den = np.zeros((1, num_features))
+    for f in range(num_features):
+        feature = np.abs(features[:, f])
+        #feature = feature[~np.isnan(feature)]
+        num_features = feature.shape[0]
+        ind = feature.argsort()[int(0.99*num_features)]
+        den[0, f] = feature[ind]
+    return features / den
 
 def clean_data(features):
     """Normalizes the features and removes NaNs"""
 
-    features = normalize(features)
+    features = shift(features)
     df = pd.DataFrame(features)
     df = df.fillna(axis=0, method='ffill').fillna(axis=0, method='bfill')
     assert not (np.any(np.isnan(df)))
     features = np.array(df)
+    if use_lowpass_filter:
+        features = filter_data(features)
+    features = rescale(features)
     return features
 
 
