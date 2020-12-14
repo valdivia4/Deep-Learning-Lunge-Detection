@@ -23,7 +23,7 @@ class config():
             # value should be odd
 
         self.near_pos_multiple = 0.2 
-        self.rand_neg_multiple = 19.8
+        self.rand_neg_multiple = 2.8
             # near_pos_multiple is the multiple of near positive training
             #  examples to keep relative to total positive training examples
             # (lunge is in the padded_window but not in the window)
