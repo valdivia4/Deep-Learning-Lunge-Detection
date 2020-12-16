@@ -265,22 +265,17 @@ def get_y_pred(features, model, flattened_input):
     skip = 1 # predict every skip seconds
     m = math.ceil(end/skip)
     
-    # TODO: Handle memory overflow of X
-    if flattened_input:
-        flattened_dim = num_features*samples_per_window
-        X = np.zeros((m,flattened_dim))
-    else:
-        X = np.zeros((m,samples_per_window,num_features))
+    flattened_dim = num_features*samples_per_window
+    X = np.zeros((m,samples_per_window,num_features))
     
     for j in range(0, m):
         sec = j*skip
         sample = int(sec*fs) # (make sure is already integer)
         window = features[sample:sample+samples_per_window,:]
-        if flattened_input:
-            window = np.reshape(window, (1, flattened_dim))
-            X[j,:] = window
-        else:
-            X[j,:,:] = window
+        X[j, :, :] = window
+
+    if flattened_input:
+        X = np.reshape(X, (X.shape[0], flattened_dim))
 
     y_pred = model.predict(X)
     return y_pred
@@ -353,14 +348,17 @@ def get_model_metrics(evaluation_files, model, flattened_input, tolerance_s,
             true_lunge_samples = np.where(labels == 1)[0]
             num_correct = 0
             num_true = len(true_lunge_samples)
-            for true_lunge_sample in true_lunge_samples:
-                # TODO: We really should be making an assignment from our predictions to
-                # to the labels; otherwise, one prediction could count for multiple true labels
-                dist = min(abs(true_lunge_sample - s) for s in positive_samples)
-                if dist < tolerance:
-                    sum_dist += dist/fs
-                    distances.append(dist/fs)
-                    num_correct += 1
+            if not positive_samples:
+                print('No positive predictions for this deployment')
+            else:
+                for true_lunge_sample in true_lunge_samples:
+                    # TODO: We really should be making an assignment from our predictions to
+                    # to the labels; otherwise, one prediction could count for multiple true labels
+                    dist = min(abs(true_lunge_sample - s) for s in positive_samples)
+                    if dist < tolerance:
+                        sum_dist += dist/fs
+                        distances.append(dist/fs)
+                        num_correct += 1
             
             tot_correct_dist += sum_dist
             total_correct += num_correct
@@ -372,16 +370,23 @@ def get_model_metrics(evaluation_files, model, flattened_input, tolerance_s,
 
             # calculate num overcounted
             num_overcounted = 0
-            for sample in positive_samples:
-                dist, true_lunge_sample = min((abs(sample - s), s)
-                                             for s in true_lunge_samples)
-                if dist < tolerance:
-                    if true_lunge_sample in already_predicted:
-                        num_overcounted += 1
-                    already_predicted.add(true_lunge_sample)
+            if len(true_lunge_samples) == 0:
+                num_overcounted = len(positive_samples)
+                print('No positive labels for this deployment')
+            else:
+                for sample in positive_samples:
+                    dist, true_lunge_sample = min((abs(sample - s), s)
+                                                 for s in true_lunge_samples)
+                    if dist < tolerance:
+                        if true_lunge_sample in already_predicted:
+                            num_overcounted += 1
+                        already_predicted.add(true_lunge_sample)
 
             total_overcounted += num_overcounted
-            
+        
+        if total_pred == 0:
+            continue
+        
         tp = round(total_correct/total_true, 3)
         fp = round(1-total_correct/total_pred, 3)
         
