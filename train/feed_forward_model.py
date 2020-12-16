@@ -19,7 +19,7 @@ from utils import get_model_metrics
 from model_configs import get_config
 from train import run_training
 
-config_name = 'feed_forward_search'
+config_name = 'feed_forward'
 config = get_config(config_name)
 
 path_to_trainset = '../training_windows/label_model_windows/'
@@ -40,7 +40,9 @@ def build_model(config):
             if config.batch_norm:
                 model.add(BatchNormalization())
             model.add(Activation(config.activation))
-    model.add(Dense(1))
+        model.add(Dense(1))
+    else:
+        model.add(Dense(1, input_dim = input_dim, kernel_regularizer=l2(config.l2_reg)))
     model.add(Activation(config.output_activation))
 
     model.compile(optimizer=config.optimizer,

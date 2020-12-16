@@ -29,7 +29,7 @@ class feed_forward_config():
         self.batch_size = 128
         self.optimizer = 'adam'
         self.learning_rate = 1e-3
-        self.hidden_layers = []
+        self.hidden_layers = [32, 20]
             #number of nodes in each hidden layer 
         self.l2_reg = 0.0 
             #l2 regularization parameter
@@ -75,7 +75,7 @@ class feed_forward_search_config():
         self.flattened_input = True
         self.near_pos_multiple = 0.2
         self.rand_neg_multiple = 2.8 
-        self.num_train_sets = 40 
+        self.num_train_sets = 10 
         self.hyper_search = True
         self.model_name = 'feed_forward'
 
@@ -110,7 +110,7 @@ class cnn_rnn_search_config():
         self.flattened_input = False #False for resnet
         self.near_pos_multiple = 0.2
         self.rand_neg_multiple = 2.8
-        self.num_train_sets = 40 
+        self.num_train_sets = 10 
         self.hyper_search = True 
         self.model_name = 'resnet'
 
