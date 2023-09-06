@@ -28,7 +28,7 @@ Then install the required packages from requirements.txt
 pip3 install -r requirements.txt
 ```
 
-Note: throughout some users may find the commands pip and python to work instead of pip3 and python3.
+Note: Throughout, some users may find the commands 'pip' and 'python' to work instead of 'pip3' and 'python3'.
 
 ## Example Usage
 
